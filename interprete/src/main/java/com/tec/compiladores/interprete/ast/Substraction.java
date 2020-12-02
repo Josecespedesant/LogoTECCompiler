@@ -1,5 +1,7 @@
 package com.tec.compiladores.interprete.ast;
 
+import java.util.Map;
+
 public class Substraction implements ASTNode {
 	private ASTNode operand1, operand2;
 
@@ -10,8 +12,10 @@ public class Substraction implements ASTNode {
 	}
 	
 	@Override
-	public Object execute() {
-		return (int) operand1.execute() - (int) operand2.execute();
+	public Object execute(Map<String, Object> symbolTable) {
+		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable)));
+		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable)));
+		return f1-f2;
 	}
 
 }

@@ -4,22 +4,37 @@ grammar Logo;
 	import java.util.Map;
 	import java.util.HashMap; 
 	import java.util.Random;
+	import java.util.ArrayList;
+	import com.tec.compiladores.interprete.ast.*;
 }
+
 
 @parser::members{
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 }
+
 /* Gramatica de un programa.
 * Tiene que tener un comentario en la primera linea.
 * Un programa puede tener procedimientos, sentencias, llamadas o comentarios. 
 * Entre cada una de ellas puede haber N cantidad de espacios*/
-program: comentario
+program: 
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+		Map<String, Object> symbolTable = new HashMap<String, Object>();
+	}
+	comentario
 	NEWLINE*
-	(procedimiento | sentence | llamada | comentario)*
-	NEWLINE*;
+	(procedimiento | sentence {body.add($sentence.node);}| llamada | comentario)*
+	NEWLINE*
+	{
+		for (ASTNode n : body){
+			n.execute(symbolTable);
+		}
+	}
+	;
 
 //Gramática de un comentario, comienza con dos barras inclinadas y termina en endline
-comentario:  '//' ~( '\r' | '\n' )*;
+comentario:  NEWLINE* '//' ~( '\r' | '\n' )* NEWLINE*;
 
 /* Gramática de una llamada.
 * Tiene que tener un identificador del procedimiento seguido de los parámetros de dicho procedimiento -si tiene- 
@@ -32,17 +47,27 @@ paramscall: PAR_SQ_OPEN ((ID|INTEGER|FLOAT) COMMA)*(ID|INTEGER|FLOAT) PAR_SQ_CLO
 /* Gramática de una sentencia
  * Puede ser cualquiera de las siguientes sentencias, y puede terminar con un endline
  */
-sentence: (inicializacion | asignacion | muestra | incremento | avanza | retrocede | girder | girizq
-	| ponpos | ponrumbo | ponx | pony | pnclrlapiz | espera | ejecuta | repite | si | sisino | hazhasta | hasta |
+sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.node;} | s2 = asignacion {$node = $s2.node;} | s3 = muestra {$node = $s3.node;} |
+	incremento | avanza | retrocede | girder | girizq| 
+	ponpos | ponrumbo | ponx | pony | pnclrlapiz | espera | ejecuta | repite | si {$node = $si.node;}| sisino {$node = $sisino.node;}| hazhasta | hasta |
 	hazmientras | mientras | elegir | cuenta | ultimo | elemento | primero | OCULTATORTUGA | APARECETORTUGA |
 	RUMBO | GOMA | BAJALAPIZ | SUBELAPIZ | CENTRO | BORRAPANTALLA) NEWLINE* ;
 
 //Distintas sentencias del lenguaje
-asignacion: (HAZ ID opera | HAZ ID opera) {symbolTable.put($ID.text,$opera.value);};
-inicializacion: INIC ID ASSIGN opera | HAZ ID ASSIGN opera;
-muestra: MUESTRA ID {System.out.println(symbolTable.get($ID.text));}|MUESTRA opera {System.out.println($opera.value);}; 	
+asignacion returns [ASTNode node]: HAZ ID opera 
+	{$node = new Asignacion($ID.text, $opera.node);}
+	;
+
+inicializacion returns [ASTNode node]: INIC ID ASSIGN opera
+	{$node = new Inicializacion($ID.text, $opera.node);}
+	;	
+						
+muestra returns [ASTNode node]: MUESTRA expression {$node = new Muestra($expression.node);}
+;
+ 	
 incremento: INC ID | INC ID opera;
-avanza: AVANZA opera {System.out.println($opera.value);};
+
+avanza: AVANZA opera ;
 retrocede: RETROCEDE opera;
 girder: GIRADERECHA opera;
 girizq: GIRAIZQUIERDA opera;
@@ -55,20 +80,34 @@ espera: ESPERA opera;
 ejecuta: EJECUTA orden;
 repite: REPITE INTEGER orden;
 
-si: SI PAR_OPEN expression PAR_CLOSE orden;
-sisino: SISINO PAR_OPEN expression PAR_CLOSE orden orden;
+si returns [ASTNode node]: 
+	{List <ASTNode> body = new ArrayList<ASTNode>();}
+	SI PAR_OPEN expression PAR_CLOSE 
+	PAR_SQ_OPEN (s1 = sentence {body.add($s1.node);} )* PAR_SQ_CLOSE 
+	{$node = new Si($expression.node, body);}
+	;
+	
+sisino returns [ASTNode node]:
+	{List <ASTNode> body = new ArrayList<ASTNode>();}
+	{List <ASTNode> elsebody = new ArrayList<ASTNode>();}	 
+	SISINO PAR_OPEN expression PAR_CLOSE 
+	PAR_SQ_OPEN (s1 = sentence {body.add($s1.node);})* PAR_SQ_CLOSE
+	PAR_SQ_OPEN (s2 = sentence {elsebody.add($s2.node);})* PAR_SQ_CLOSE  
+	{$node = new SiSiNo($expression.node, body, elsebody);}
+	;
+
 hazhasta: HAZHASTA orden PAR_OPEN expression PAR_CLOSE;
 hasta: HASTA PAR_OPEN expression PAR_CLOSE orden;
 hazmientras: HAZMIENTRAS orden PAR_OPEN expression PAR_CLOSE;
 mientras: MIENTRAS PAR_OPEN expression PAR_CLOSE orden;
 
 //Operadores de comparación
-iguales returns [Object value]: IGUALES t1 = opera t2 = opera {$value = $t1.value.equals($t2.value); };
-y returns [Object value]: Y t1 = comparar t2 = comparar {$value = (Boolean) $t1.value && (Boolean) $t2.value;} ; //Falta
-o returns [Object value]: Y PAR_OPEN comparar PAR_CLOSE PAR_OPEN comparar PAR_CLOSE; //Falta
-mayorque returns [Object value]: MAYORQUE t1= opera t2=opera {$value = (int) $t1.value > (int) $t2.value;} ;
-menorque returns [Object value]: MENORQUE t1 = opera t2= opera{$value = (int) $t1.value < (int)$t2.value;};
-redondea returns [Object value]: REDONDEA t1 = opera {$value = (int) Math.round( (Float) $t1.value);};
+iguales returns [ASTNode node]: IGUALES t1 = opera t2 = opera ;
+y returns [ASTNode node]: Y PAR_OPEN t1 = comparar PAR_CLOSE PAR_OPEN t2 = comparar  PAR_CLOSE ; //Falta
+o returns [ASTNode node]: O PAR_OPEN comparar PAR_CLOSE PAR_OPEN comparar PAR_CLOSE; //Falta
+mayorque returns [ASTNode node]: MAYORQUE t1= opera t2=opera  ;
+menorque returns [ASTNode node]: MENORQUE t1 = opera t2= opera;
+redondea returns [ASTNode node]: REDONDEA t1 = opera ;
 
 /* Gramática de una orden
  * Una orden está compuesta por dos paréntesis cuadrados donde, dentro contiene ninguna o varias sentencias
@@ -78,90 +117,86 @@ orden: PAR_SQ_OPEN sentence* PAR_SQ_CLOSE;
 /* Gramática de una comparación
  * Compara dos operaciones, identificadores, u expresion en general mediante un operador de comparación
  */
-comparar returns [Object value]
+comparar returns [ASTNode node]
 	: comparar (GT | LT | GEQ | LEQ | EQ | NEQ) comparar
-	| t1 = opera {$value = $t1.value;}
+	| t1 = opera 
 	;
 // Un operador puede ser un identificador, un número positivo o negativo, etc.
-opera returns [Object value]
+opera returns [ASTNode node]
 	:
 	PAR_OPEN? (
-	ID {$value = $ID.text;}
-	|BOOLEAN {$value = Boolean.parseBoolean($BOOLEAN.text);}
-	|FLOAT {$value = Float.parseFloat($FLOAT.text);}
-	|INTEGER {$value = (float) Integer.parseInt($INTEGER.text);}
-	|t1=expression {$value = (float)$t1.value;}
-	|t2 = diferencia {$value = $t2.value;}
-	|t3 = azar {$value = (int) $t3.value;}
-	|t4 = menos {$value = $t4.value;}
-	|t5 = producto {$value = $t5.value;}
-	|t6 = potencia {$value = $t6.value;}
-	|t7 = division {$value = $t7.value;}
-	|t8 = resto {$value = $t8.value;}
-	|t9 = suma {$value = $t9.value;}
-	|t10 = iguales {$value = (Boolean) $t10.value;}
-	|t11 = y {$value = (Boolean) $t11.value;}
-	|t12 = o {$value = (Boolean) $t12.value;}
-	|t13 = mayorque {$value = (Boolean) $t13.value;} 
-	|t14 = menorque {$value = (Boolean) $t14.value;}
-	|t15 = redondea {$value = (int) $t15.value;} 
+	|t1 = expression {$node = $t1.node;}
+	|t2 = diferencia {$node = $t2.node;}
+	|t3 = azar {$node = $t3.node;}
+	|t4 = menos {$node = $t4.node;}
+	|t5 = producto {$node = $t5.node;}
+	|t6 = potencia {$node = $t6.node;}
+	|t7 = division {$node = $t7.node;}
+	|t8 = resto {$node = $t8.node;}
+	|t9 = suma {$node = $t9.node;}
+	|t10 = iguales 
+	|t11 = y 
+	|t12 = o 
+	|t13 = mayorque  
+	|t14 = menorque 
+	|t15 = redondea  
 	) PAR_CLOSE?
 	;	
 	
-expression returns [Object value]:
-	t1 = factor {$value = (float)$t1.value;}
-	(PLUS t2 = factor{$value = (float) $value + (float) $t2.value;}
-		|MINUS t2 = factor{$value = (float) $value - (float) $t2.value;}
+expression returns [ASTNode node]:
+	t1 = factor {$node = $t1.node;}
+	(PLUS t2 = factor{$node = new Addition($node, $t2.node);}
+		|MINUS t2 = factor{$node = new Substraction($node, $t2.node);}
 	)*;
 
-factor returns [Object value]:
-	t1 = term {$value = (float) $t1.value;}
-	(MULT t2 = term {$value = (float)$value * (float) $t2.value;}
-		|DIV t2 = term {$value = (float)$value / (float) $t2.value;}
+factor returns [ASTNode node]:
+	t1 = term {$node = $t1.node;}
+	(MULT t2 = term {$node = new Multiplication($node, $t2.node);}
+		|DIV t2 = term {$node = new Division($node, $t2.node);}
 	)*;
 
-term returns [Object value]:
-	BOOLEAN {$value = Boolean.parseBoolean($BOOLEAN.text);}|
-	ID {$value = (float) symbolTable.get($ID.text);} |
-	INTEGER {$value = (float) Integer.parseInt($INTEGER.text);}|
-	FLOAT {$value = Float.parseFloat($FLOAT.text);}|
-	PAR_OPEN expression PAR_CLOSE
+term returns [ASTNode node]:
+	BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}|
+	ID {$node = new VarRef($ID.text);}|
+	INTEGER {$node = new Constant(Integer.parseInt($INTEGER.text));}|
+	FLOAT {$node = new Constant(Float.parseFloat($FLOAT.text));}|
+	PAR_OPEN expression {$node = $expression.node;} PAR_CLOSE
 	;
 	
 
 //Suma entre uno o más números
-suma returns [Object value]: SUMA PAR_OPEN t1=opera COMMA t2=opera {$value = (float)$t1.value + (float)$t2.value;} 
-	(COMMA t3=opera {$value = (float)$value + (float)$t3.value;} )* PAR_CLOSE
+suma returns [ASTNode node]: SUMA PAR_OPEN t1=opera COMMA t2=opera {$node = new Addition($t1.node, $t2.node);} 
+	(COMMA t3=opera {$node = new Addition($node, $t3.node);} )* PAR_CLOSE
 	;
 //Devuelve diferencia entre los n números (minimo 2)
-diferencia returns [Object value]: DIFERENCIA PAR_OPEN t1=opera COMMA t2=opera {$value = (float)$t1.value - (float)$t2.value;} 
-	(COMMA t3=opera {$value = (float)$value - (float)$t3.value;} )* PAR_CLOSE
+diferencia returns [ASTNode node]: DIFERENCIA PAR_OPEN t1=opera COMMA t2=opera {$node = new Substraction($t1.node, $t2.node);} 
+	(COMMA t3=opera {$node = new Substraction($node, $t3.node);} )* PAR_CLOSE
 	;
 	
+//Devuelve el producto de los n números (minimo 2)
+producto returns [ASTNode node]: PRODUCTO PAR_OPEN t1=opera COMMA t2=opera {$node = new Multiplication($t1.node, $t2.node);} 
+	(COMMA t3=opera {$node = new Multiplication($node, $t3.node);} )* PAR_CLOSE;
+
 //Genera un numero random entre 0 y el valor parámetro
-azar returns [Object value]: AZAR PAR_OPEN t1 = opera {$value =  0 + (int)(Math.random() * (((int)$t1.value - 0) + 1));} PAR_CLOSE;
+azar returns [ASTNode node]: AZAR PAR_OPEN t1 = opera {$node = new Azar($t1.node);} PAR_CLOSE;
 
 //Cambia el signo de un resultado
-menos returns [Object value]: MENOS PAR_OPEN t1 = opera {$value = (float)$t1.value * -1;} PAR_CLOSE;
-
-//Devuelve el producto de los n números (minimo 2)
-producto returns [Object value]: PRODUCTO PAR_OPEN t1=opera COMMA t2=opera {$value = (float)$t1.value * (float)$t2.value;} 
-	(COMMA t3=opera {$value = (float)$value * (float)$t3.value;} )* PAR_CLOSE;
+menos returns [ASTNode node]: MENOS PAR_OPEN t1 = opera {$node = new Minus($t1.node);} PAR_CLOSE;
 
 //Eleva el primer parametro al segundo
-potencia returns [Object value]: POTENCIA PAR_OPEN base= opera COMMA power = opera {$value = (float) Math.pow((float)$base.value, (float)$power.value);} PAR_CLOSE;
+potencia returns [ASTNode node]: POTENCIA PAR_OPEN base= opera COMMA power = opera {$node = new Power($base.node, $power.node);} PAR_CLOSE;
 
 //Divide el primer numero entre el segundo div entera
-division returns [Object value]: DIVISION PAR_OPEN num = opera COMMA den = opera {$value = (float) $num.value / (float) $den.value;} PAR_CLOSE;
+division returns [ASTNode node]: DIVISION PAR_OPEN num = opera COMMA den = opera {$node = new Division($num.node, $den.node);} PAR_CLOSE;
 
 //Residuo entre el primer número y el segundo
-resto returns [Object value]: RESTO PAR_OPEN t1 = opera COMMA t2 = opera {$value = (float) $t1.value % (float) $t2.value;} PAR_OPEN;
+resto returns [ASTNode node]: RESTO PAR_OPEN t1 = opera COMMA t2 = opera {$node = new Residue($t1.node, $t2.node);} PAR_CLOSE;
 
 
 /* Expresión regular de una lista
  * Puede tener identificadores o numeros, tiene que estar separados por espacio coma espacio
  */
-lista: PAR_SQ_OPEN (ID|INTEGER|FLOAT) (COMMA (ID|INTEGER|FLOAT))* PAR_SQ_CLOSE | PAR_SQ_OPEN PAR_SQ_CLOSE;
+lista: PAR_SQ_OPEN term (COMMA term)* PAR_SQ_CLOSE | PAR_SQ_OPEN PAR_SQ_CLOSE;
 //Expresiones regulares de operaciones con listas
 elegir: ELEGIR lista;
 cuenta: CUENTA lista;
@@ -177,14 +212,14 @@ primero: PRIMERO lista;
 procedimiento:
 	(PARA ID params?
 	NEWLINE*
-	(sentence | llamada)*
+	(sentence | llamada | comentario)*
 	NEWLINE*
 	FIN) NEWLINE* 
 	;
 /* Expresión regular de los parámetros 
  * Comienza con paréntesis cuadrados, seguido de al menos un identificador, de haber más tienen que ser separados por comas
  */
-params: PAR_SQ_OPEN ID (COMMA ID)* PAR_SQ_CLOSE;	
+params: PAR_SQ_OPEN ID (COMMA ID)* PAR_SQ_CLOSE | PAR_SQ_OPEN PAR_SQ_CLOSE ;	
 	
 //TOKENS	
 PARA: 'para';

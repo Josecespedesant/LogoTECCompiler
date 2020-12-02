@@ -1,11 +1,11 @@
 package com.tec.compiladores.interprete.ast;
 
 import java.util.List;
+import java.util.Map;
 
 public class Si implements ASTNode {
 	private ASTNode condition;
 	private List<ASTNode> body;
-	private List<ASTNode> elsebody;
 	
 	public Si(ASTNode condition, List<ASTNode> body) {
 		super();
@@ -14,14 +14,10 @@ public class Si implements ASTNode {
 	}
 
 	@Override
-	public Object execute() {
-		if((boolean) condition.execute()) {
+	public Object execute(Map<String, Object> symbolTable) {
+		if((boolean) condition.execute(symbolTable)) {
 			for(ASTNode n : body) {
-				n.execute();
-			}
-		}else {
-			for(ASTNode n : body) {
-				n.execute();
+				n.execute(symbolTable);
 			}
 		}
 		return null;
