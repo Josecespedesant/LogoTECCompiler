@@ -1,4 +1,9 @@
 //aqui va un primer comentario jaja
 
-haz cara 20
-muestra cara + 5
+para cuadrado
+	haz x 5
+	
+	muestra suma ( x , 5 )
+fin
+
+cuadrado ()
