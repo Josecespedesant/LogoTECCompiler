@@ -36,6 +36,11 @@ mostrable returns [ASTNode node]:
 	|opera {$node = $opera.node;} 
 	|comparar {$node = $comparar.node;}
 ;
+
+listable returns [ASTNode node]:
+	opera {$node = $opera.node;}
+	|lista {$node = $lista.node;}
+	;
 		
 /* Gramática de una sentencia
  * Puede ser cualquiera de las siguientes sentencias, y puede terminar con un endline
@@ -49,12 +54,13 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	RUMBO | GOMA | BAJALAPIZ | SUBELAPIZ | CENTRO | BORRAPANTALLA) NEWLINE* ;
 	
 //Distintas sentencias del lenguaje (PUEDEN IR EN CUALQUIER BLOQUE DENTRO DEL PROGRAMA)
-asignacion returns [ASTNode node]: HAZ ID opera 
-	{$node = new Asignacion($ID.text, $opera.node);};
-inicializacion returns [ASTNode node]: INIC ID ASSIGN opera
-	{$node = new Inicializacion($ID.text, $opera.node);};	
+asignacion returns [ASTNode node]: HAZ ID listable 
+	{$node = new Asignacion($ID.text, $listable.node);};
+inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
+	{$node = new Inicializacion($ID.text, $listable.node);};	
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};
 incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID opera {$node = new Incremento2($ID.text, $opera.node);};
+
 avanza: AVANZA opera ;
 retrocede: RETROCEDE opera;
 girder: GIRADERECHA opera;
@@ -73,7 +79,7 @@ espera: ESPERA opera;
  */
 procedimiento returns [ASTNode node]:
 	{List <ASTNode> body = new ArrayList<ASTNode>();}
-	(PARA procName = ID (PAR_SQ_OPEN param = ID (COMMA paramn= ID)* PAR_SQ_CLOSE)?
+	(PARA procName = ID (PAR_OPEN param = ID {$node = new AsignacionVacia($param.text);} (COMMA paramn= ID {$node = new AsignacionVacia($paramn.text);})* PAR_CLOSE)?
 	NEWLINE*
 	(t1 = sentence {body.add($t1.node);} | comentario)*
 	NEWLINE*
@@ -214,9 +220,17 @@ redondea returns [ASTNode node]: REDONDEA t1 = opera {$node = new Round($t1.node
 /* Expresión regular de una lista
  * Puede tener identificadores o numeros, tiene que estar separados por espacio coma espacio
  */
-lista: PAR_SQ_OPEN term (COMMA term)* PAR_SQ_CLOSE | PAR_SQ_OPEN PAR_SQ_CLOSE;
+lista returns [ASTNode node]: 
+	{List<ASTNode> list = new ArrayList<ASTNode>();}
+	PAR_SQ_OPEN t1 = term {list.add($t1.node);} (COMMA t2 = term {list.add($t2.node);})* PAR_SQ_CLOSE 
+	{$node = new ListaLogo(list);}
+	|
+	{List<ASTNode> list = new ArrayList<ASTNode>();} 
+	PAR_SQ_OPEN PAR_SQ_CLOSE {$node = new ListaLogo(list);};
+	
 //Expresiones regulares de operaciones con listas
-elegir: ELEGIR lista;
+elegir returns [ASTNode node]: ELEGIR lista {$node = new Elegir($lista.node);};
+
 cuenta: CUENTA lista;
 ultimo: ULTIMO lista;
 elemento: ELEMENTO INTEGER lista;
@@ -230,12 +244,12 @@ COMMA: ',';
 HAZ: 'haz';
 INIC: 'inic';
 INC: 'inc';
-AVANZA: 'AV';
-RETROCEDE: 'RE';
-GIRADERECHA: 'GD';
-GIRAIZQUIERDA: 'GI';
-OCULTATORTUGA: 'OT';
-APARECETORTUGA: 'AT';
+AVANZA: 'AV'|'avanza';
+RETROCEDE: 'RE'|'retrocede';
+GIRADERECHA: 'GD'|'giraderecha';
+GIRAIZQUIERDA: 'GI' | 'giraizquierda';
+OCULTATORTUGA: 'OT' | 'ocultatortuga';
+APARECETORTUGA: 'AT' 'aparecetortuga';
 PONPOS: 'ponPos';
 PONXY: 'ponXY';
 PONRUMBO: 'ponRumbo';
@@ -294,12 +308,14 @@ NEQ: '!=';
 
 ASSIGN: '=';
 
+ID: [a-z][a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?;
+
+
 PAR_OPEN: '(';
 PAR_CLOSE: ')';
 PAR_SQ_OPEN: '[';
 PAR_SQ_CLOSE: ']';
 
-ID: [a-z][a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?[a-zA-Z0-9_&-@]?;
 
 INTEGER: MINUS?[0-9]+;
 FLOAT: MINUS? POINT [0-9]+ | MINUS? [0-9]+ POINT [0-9]*;

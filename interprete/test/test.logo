@@ -2,8 +2,8 @@
 
 para cuadrado
 	haz x 5
-	
-	muestra suma ( x , 5 )
+	inc x
+	muestra elegir [ 3 , 2 , 1 , 5 , 90]
 fin
 
 cuadrado ()
