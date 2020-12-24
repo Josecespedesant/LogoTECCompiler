@@ -1,9 +1,17 @@
 //aqui va un primer comentario jaja
 
-para cuadrado
+
+para triangulo ( x1 , x2 ) 
 	haz x 5
-	inc x
-	muestra elegir [ 3 , 2 , 1 , 5 , 90]
+	inc x x1
+	muestra x + x2
 fin
 
-cuadrado ()
+para cuadrado ( t , r )
+	haz h 90
+	inc h r
+	triangulo ( 10 , 10 )
+	muestra h + t
+fin
+
+cuadrado ( 3 , 10 )

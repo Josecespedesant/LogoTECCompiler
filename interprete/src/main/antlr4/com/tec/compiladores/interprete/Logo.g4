@@ -59,7 +59,7 @@ asignacion returns [ASTNode node]: HAZ ID listable
 inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
 	{$node = new Inicializacion($ID.text, $listable.node);};	
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};
-incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID opera {$node = new Incremento2($ID.text, $opera.node);};
+incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID listable {$node = new Incremento2($ID.text, $listable.node);};
 
 avanza: AVANZA opera ;
 retrocede: RETROCEDE opera;
@@ -79,17 +79,20 @@ espera: ESPERA opera;
  */
 procedimiento returns [ASTNode node]:
 	{List <ASTNode> body = new ArrayList<ASTNode>();}
-	(PARA procName = ID (PAR_OPEN param = ID {$node = new AsignacionVacia($param.text);} (COMMA paramn= ID {$node = new AsignacionVacia($paramn.text);})* PAR_CLOSE)?
+	{List <String> paramList = new ArrayList<String>();}
+	(PARA procName = ID (PAR_OPEN param = ID {paramList.add($param.text);}  
+										(COMMA paramn = ID {paramList.add($paramn.text);})* PAR_CLOSE)?
 	NEWLINE*
-	(t1 = sentence {body.add($t1.node);} | comentario)*
+	(t1 = sentence {body.add($t1.node);} | comentario | llamada)*
 	NEWLINE*
 	FIN) NEWLINE* 
-	{$node = new Procedimiento($procName.text,body);}
+	{$node = new Procedimiento($procName.text, body, paramList);}
 	;
 	
 llamada returns [ASTNode node]:
-	procName=ID PAR_OPEN PAR_CLOSE
-	{$node = new Llamada($procName.text);}
+	{List <ASTNode> paramList = new ArrayList<ASTNode>();}
+	procName=ID PAR_OPEN (param = listable {paramList.add($param.node);} (COMMA paramn = listable {paramList.add($paramn.node);})*)? PAR_CLOSE
+	{$node = new Llamada($procName.text, paramList);}
 	;
 
 ejecuta returns [ASTNode node]: EJECUTA
