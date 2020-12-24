@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Elegir implements ASTNode {
+public class Ultimo implements ASTNode {
 	private int randNum;
 	private String id;
 	
-	public Elegir(String id) {
+	public Ultimo(String id) {
 		super();
-		this.randNum = 0;
 		this.id = id;
 	}
 
@@ -25,8 +24,7 @@ public class Elegir implements ASTNode {
 		}
 		
 		int max = lista2.size() - 1;
-		randNum =  0 + (int)(Math.random() * ((max - 0) + 1));
-		return lista2.get(randNum);
+		return lista2.get(max);
 	}
 
 }

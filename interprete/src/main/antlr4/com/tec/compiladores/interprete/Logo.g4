@@ -49,8 +49,8 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	s4 = incremento {$node = $s4.node;}| avanza | retrocede | girder | girizq| 
 	ponpos | ponrumbo | ponx | pony | pnclrlapiz | espera | s15 = ejecuta {$node = $s15.node;} | s16 = repite {$node = $s16.node;} 
 	| si {$node = $si.node;}| sisino {$node = $sisino.node;}| hazhasta {$node = $hazhasta.node;} | hasta {$node = $hasta.node;} |
-	hazmientras {$node = $hazmientras.node;} | mientras {$node = $mientras.node;}|  elegir | cuenta | ultimo | 
-	elemento | primero | OCULTATORTUGA | APARECETORTUGA | llamada {$node = $llamada.node;} |
+	hazmientras {$node = $hazmientras.node;} | mientras {$node = $mientras.node;}|  elegir {$node = $elegir.node;} | cuenta {$node = $cuenta.node;} | ultimo {$node = $ultimo.node;} | 
+	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA | APARECETORTUGA | llamada {$node = $llamada.node;} |
 	RUMBO | GOMA | BAJALAPIZ | SUBELAPIZ | CENTRO | BORRAPANTALLA) NEWLINE* ;
 	
 //Distintas sentencias del lenguaje (PUEDEN IR EN CUALQUIER BLOQUE DENTRO DEL PROGRAMA)
@@ -162,7 +162,8 @@ iguales returns [ASTNode node]:
 	
 y returns [ASTNode node]: Y PAR_OPEN t1 = comparar PAR_CLOSE PAR_OPEN t2 = comparar  PAR_CLOSE 
 		{$node = new Y($t1.node, $t2.node);};
-o returns [ASTNode node]: O PAR_OPEN comparar PAR_CLOSE PAR_OPEN comparar PAR_CLOSE; //FALTA
+o returns [ASTNode node]: O PAR_OPEN t1 = comparar PAR_CLOSE PAR_OPEN t2 = comparar PAR_CLOSE
+		{$node = new O($t1.node, $t2.node);};
 mayorque returns [ASTNode node]: MAYORQUE t1= opera t2=opera  {$node = new MayorQue($t1.node, $t2.node);};
 menorque returns [ASTNode node]: MENORQUE t1 = opera t2= opera {$node = new MenorQue($t1.node, $t2.node);};
 	
@@ -225,19 +226,23 @@ redondea returns [ASTNode node]: REDONDEA t1 = opera {$node = new Round($t1.node
  */
 lista returns [ASTNode node]: 
 	{List<ASTNode> list = new ArrayList<ASTNode>();}
-	PAR_SQ_OPEN t1 = term {list.add($t1.node);} (COMMA t2 = term {list.add($t2.node);})* PAR_SQ_CLOSE 
+	PAR_SQ_OPEN t1 = opera {list.add($t1.node);} (COMMA t2 = opera {list.add($t2.node);})* PAR_SQ_CLOSE 
 	{$node = new ListaLogo(list);}
 	|
 	{List<ASTNode> list = new ArrayList<ASTNode>();} 
 	PAR_SQ_OPEN PAR_SQ_CLOSE {$node = new ListaLogo(list);};
 	
 //Expresiones regulares de operaciones con listas
-elegir returns [ASTNode node]: ELEGIR lista {$node = new Elegir($lista.node);};
-
-cuenta: CUENTA lista;
-ultimo: ULTIMO lista;
-elemento: ELEMENTO INTEGER lista;
-primero: PRIMERO lista;
+//Elige un elemento random de la lista
+elegir returns [ASTNode node]: ELEGIR ID {$node = new Elegir($ID.text);} | ELEGIR lista {$node = new Elegir2($lista.node);};
+//Cuenta el número de elementos de la lista
+cuenta returns [ASTNode node]: CUENTA ID {$node = new Cuenta($ID.text);}| CUENTA lista {$node = new Cuenta2($lista.node);};
+//Devuelve el ultimo elemento de la lista
+ultimo returns [ASTNode node]: ULTIMO ID {$node = new Ultimo($ID.text);} | ULTIMO lista {$node = new Ultimo2($lista.node);};
+//Devuelve el elemento n de la lista
+elemento returns [ASTNode node]: ELEMENTO INTEGER ID {$node = new Elemento($ID.text, Integer.parseInt($INTEGER.text));} | ELEMENTO INTEGER lista {$node = new Elemento2($lista.node, Integer.parseInt($INTEGER.text));};
+//Devuelve el primer elemento de la lista
+primero returns[ASTNode node]: PRIMERO ID {$node = new Primero($ID.text);} | PRIMERO lista {$node = new Primero2($lista.node);};
 
 //LISTA DE TOKENS	*TERMINALES*
 PARA: 'para';

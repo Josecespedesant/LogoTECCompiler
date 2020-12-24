@@ -1,17 +1,9 @@
 //aqui va un primer comentario jaja
 
-
-para triangulo ( x1 , x2 ) 
-	haz x 5
-	inc x x1
-	muestra x + x2
+para triangulo 
+	haz x [ 1 , 2 , 3 ]
+	muestra primero x
+	muestra primero [1 , 2 , 3 , 4, 5 + 4 ]
 fin
 
-para cuadrado ( t , r )
-	haz h 90
-	inc h r
-	triangulo ( 10 , 10 )
-	muestra h + t
-fin
-
-cuadrado ( 3 , 10 )
+triangulo ()
