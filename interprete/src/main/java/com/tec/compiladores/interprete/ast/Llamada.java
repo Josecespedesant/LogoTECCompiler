@@ -20,13 +20,14 @@ public class Llamada implements ASTNode {
 		
 		List <ASTNode> body = (List<ASTNode>) ((List<ASTNode>) symbolTable.get(id)).get(0);
 		List <String> parameters = (List<String>) ((List<ASTNode>) symbolTable.get(id)).get(1);
+		Map<String, Object> symbolTableLocal = (Map<String, Object>) ((List<ASTNode>) symbolTable.get(id)).get(2);
 		
 		for(int i = 0; i<parameters.size();i++) {
-			symbolTable.put(parameters.get(i), paramscall.get(i).execute(symbolTable));
+			symbolTableLocal.put(parameters.get(i), paramscall.get(i).execute(symbolTableLocal));
 		}
 		
 		for(ASTNode n : body) {
-			n.execute(symbolTable);
+			n.execute(symbolTableLocal);
 		}
 		return null;
 	}

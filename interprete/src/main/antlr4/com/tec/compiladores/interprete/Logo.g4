@@ -11,7 +11,6 @@ grammar Logo;
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 }
 
-
 /* Gramatica de un programa.
 * Tiene que tener un comentario en la primera linea.
 * Un programa puede tener procedimientos, sentencias, llamadas o comentarios. 
@@ -19,7 +18,6 @@ grammar Logo;
 program: 
 	{
 		List<ASTNode> body = new ArrayList<ASTNode>();
-		Map<String, Object> symbolTable = new HashMap<String, Object>();
 	}
 	comentario
 	NEWLINE*
@@ -53,7 +51,7 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA | APARECETORTUGA | llamada {$node = $llamada.node;} |
 	RUMBO | GOMA | BAJALAPIZ | SUBELAPIZ | CENTRO | BORRAPANTALLA) NEWLINE* ;
 	
-//Distintas sentencias del lenguaje (PUEDEN IR EN CUALQUIER BLOQUE DENTRO DEL PROGRAMA)
+ 
 asignacion returns [ASTNode node]: HAZ ID listable 
 	{$node = new Asignacion($ID.text, $listable.node);};
 inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
@@ -80,13 +78,15 @@ espera: ESPERA opera;
 procedimiento returns [ASTNode node]:
 	{List <ASTNode> body = new ArrayList<ASTNode>();}
 	{List <String> paramList = new ArrayList<String>();}
+	{Map<String, Object> symbolTableLocal = symbolTable;}
+	
 	(PARA procName = ID (PAR_OPEN param = ID {paramList.add($param.text);}  
 										(COMMA paramn = ID {paramList.add($paramn.text);})* PAR_CLOSE)?
 	NEWLINE*
-	(t1 = sentence {body.add($t1.node);} | comentario | llamada)*
+	(t1 = sentence {body.add($t1.node);} | comentario | llamada {body.add($llamada.node);})*
 	NEWLINE*
 	FIN) NEWLINE* 
-	{$node = new Procedimiento($procName.text, body, paramList);}
+	{$node = new Procedimiento($procName.text, body, paramList, symbolTableLocal);}
 	;
 	
 llamada returns [ASTNode node]:

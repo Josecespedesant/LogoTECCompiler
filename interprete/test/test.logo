@@ -1,9 +1,16 @@
-//aqui va un primer comentario jaja
+//aqui va un primer comentario jaja xD
 
-para triangulo 
-	haz x [ 1 , 2 , 3 ]
-	muestra primero x
-	muestra primero [1 , 2 , 3 , 4, 5 + 4 ]
+haz x 3
+
+para cuadrado ( r )
+	muestra x
 fin
 
-triangulo ()
+para triangulo ( s )
+	haz x 6
+	muestra x
+fin 
+
+
+cuadrado ( 6 )
+triangulo ( 4 )

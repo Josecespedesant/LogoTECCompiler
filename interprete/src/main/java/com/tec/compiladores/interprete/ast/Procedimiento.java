@@ -9,23 +9,27 @@ public class Procedimiento implements ASTNode {
 	private List<Object> aux;
 	List<ASTNode> body;
 	List<String> params;
+	Map<String, Object> symbolTableLocal;
 	
-	
-	public Procedimiento(String name, List<ASTNode> body, List<String> params) {
+	public Procedimiento(String name, List<ASTNode> body, List<String> params, Map<String, Object> symbolTableLocal) {
 		super();
 		this.name = name;
 		this.body = body;
 		this.params = params;
+		this.symbolTableLocal = symbolTableLocal;
 		this.aux = new ArrayList<Object>();
 	}
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		for(String s : params) {
-			symbolTable.put(s, new Object());
+			symbolTableLocal.put(s, new Object());
 		}
+		
 		this.aux.add(body);
 		this.aux.add(params);
+		this.aux.add(symbolTableLocal);
+		
 		symbolTable.put(name, aux);
 		return null;
 	}
