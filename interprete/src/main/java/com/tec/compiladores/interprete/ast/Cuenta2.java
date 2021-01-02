@@ -13,8 +13,8 @@ public class Cuenta2 implements ASTNode {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		return ((List<ASTNode>) node.execute(symbolTable)).size();
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		return ((List<ASTNode>) node.execute(symbolTable, null)).size();
 	}
 
 }

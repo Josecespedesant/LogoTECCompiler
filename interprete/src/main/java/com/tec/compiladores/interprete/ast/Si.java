@@ -14,10 +14,10 @@ public class Si implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		if((boolean) condition.execute(symbolTable)) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		if((boolean) condition.execute(symbolTable, null)) {
 			for(ASTNode n : body) {
-				n.execute(symbolTable);
+				n.execute(symbolTable, null);
 			}
 		}
 		return null;

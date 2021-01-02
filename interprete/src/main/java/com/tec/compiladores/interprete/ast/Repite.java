@@ -14,10 +14,10 @@ public class Repite implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(int i=0; i<times; i++) {
 			for(ASTNode n : body) {
-				n.execute(symbolTable);
+				n.execute(symbolTable, null);
 			}
 		}
 		return null;

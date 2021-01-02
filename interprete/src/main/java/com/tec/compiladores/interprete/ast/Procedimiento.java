@@ -21,7 +21,7 @@ public class Procedimiento implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(String s : params) {
 			symbolTableLocal.put(s, new Object());
 		}

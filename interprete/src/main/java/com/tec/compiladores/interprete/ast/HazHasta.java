@@ -14,14 +14,14 @@ public class HazHasta implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		boolean flag = true;
 		do {
 			for(ASTNode n : body) {
-				if((boolean)condition.execute(symbolTable) == true) {
+				if((boolean)condition.execute(symbolTable, null) == true) {
 					flag = false;
 				}
-				n.execute(symbolTable);
+				n.execute(symbolTable, null);
 			}
 		} while ( flag );
 		

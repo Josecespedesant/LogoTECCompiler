@@ -18,12 +18,13 @@ grammar Logo;
 program: 
 	{
 		List<ASTNode> body = new ArrayList<ASTNode>();
+		Turtle turtle = new Turtle();
 	}
 	comentario
 	NEWLINE*
 	(procedimiento {body.add($procedimiento.node);} | sentence {body.add($sentence.node);}| comentario)*
 	NEWLINE*
-	{for (ASTNode n : body){n.execute(symbolTable);}}
+	{for (ASTNode n : body){n.execute(symbolTable, turtle);}}
 	;
 
 //Gramática de un comentario, comienza con dos barras inclinadas y termina en endline
@@ -44,12 +45,12 @@ listable returns [ASTNode node]:
  * Puede ser cualquiera de las siguientes sentencias, y puede terminar con un endline
  */
 sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.node;} | s2 = asignacion {$node = $s2.node;} | s3 = muestra {$node = $s3.node;} |
-	s4 = incremento {$node = $s4.node;}| avanza | retrocede | girder | girizq| 
-	ponpos | ponrumbo | ponx | pony | pnclrlapiz | espera | s15 = ejecuta {$node = $s15.node;} | s16 = repite {$node = $s16.node;} 
+	s4 = incremento {$node = $s4.node;}| avanza {$node = $avanza.node;}| retrocede {$node = $retrocede.node;}| girder {$node = $girder.node;} | girizq {$node = $girizq.node;}| 
+	ponpos {$node = $ponpos.node;} | ponrumbo {$node = $ponrumbo.node;} | ponx {$node = $ponx.node;} | pony {$node = $pony.node;} | pnclrlapiz {$node = $pnclrlapiz.node;} | espera {$node = $espera.node;}| s15 = ejecuta {$node = $s15.node;} | s16 = repite {$node = $s16.node;} 
 	| si {$node = $si.node;}| sisino {$node = $sisino.node;}| hazhasta {$node = $hazhasta.node;} | hasta {$node = $hasta.node;} |
 	hazmientras {$node = $hazmientras.node;} | mientras {$node = $mientras.node;}|  elegir {$node = $elegir.node;} | cuenta {$node = $cuenta.node;} | ultimo {$node = $ultimo.node;} | 
-	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA | APARECETORTUGA | llamada {$node = $llamada.node;} |
-	RUMBO | GOMA | BAJALAPIZ | SUBELAPIZ | CENTRO | BORRAPANTALLA) NEWLINE* ;
+	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA {$node = new OcultaTortuga();} | APARECETORTUGA {$node = new ApareceTortuga();} | llamada {$node = $llamada.node;} |
+	RUMBO {$node = new Rumbo();}| GOMA {$node = new Goma();} | BAJALAPIZ {$node = new Baja();} | SUBELAPIZ {$node = new Sube();} | CENTRO {$node = new Centro();} | BORRAPANTALLA {$node = new BorraPantalla();}) NEWLINE* ;
 	
  
 asignacion returns [ASTNode node]: HAZ ID listable 
@@ -59,16 +60,17 @@ inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};
 incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID listable {$node = new Incremento2($ID.text, $listable.node);};
 
-avanza: AVANZA opera ;
-retrocede: RETROCEDE opera;
-girder: GIRADERECHA opera;
-girizq: GIRAIZQUIERDA opera;
-ponpos: PONPOS opera opera | PONXY opera opera;
-ponrumbo: PONRUMBO opera;
-ponx: PONX opera;
-pony: PONY opera;
-pnclrlapiz: PONCOLORLAPIZ COLOR;
-espera: ESPERA opera;
+avanza returns [ASTNode node]: AVANZA opera {$node = new Avanza($opera.node);} ;
+retrocede returns [ASTNode node]: RETROCEDE opera {$node = new Retrocede($opera.node);};
+girder returns [ASTNode node]: GIRADERECHA opera {$node = new GirDer($opera.node);};
+girizq returns [ASTNode node]: GIRAIZQUIERDA opera {$node = new GirIzq($opera.node);};
+ponpos returns [ASTNode node]: PONPOS t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);} 
+							| PONXY t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);};
+ponrumbo returns [ASTNode node]: PONRUMBO opera {$node = new PonRumbo($opera.node);};
+ponx returns [ASTNode node]: PONX opera {$node = new PonX($opera.node);};
+pony returns [ASTNode node]: PONY opera {$node = new PonY($opera.node);};
+pnclrlapiz returns [ASTNode node]: PONCOLORLAPIZ COLOR {$node = new PonColorLapiz($COLOR.text);};
+espera returns [ASTNode node]: ESPERA opera {$node = new Espera($opera.node);};
 
 /* Expresión regular de un procedimiento
  * Debe tener la palabra clave para, seguida de un identificador que debe comenzar con minuscula con un maximo de 10 caracteres
@@ -299,7 +301,7 @@ ULTIMO: 'ultimo';
 ELEMENTO: 'elemento';
 PRIMERO: 'primero';
 BORRAPANTALLA: 'borraPantalla';
-COLOR: 'blanco' | 'azul' | 'marron' | 'cian' | 'gris' | 'amarillo' | 'negro' | 'rojo' | 'verde'
+COLOR: 'white' | 'blue' | 'brown' | 'cyan' | 'grey' | 'yellow' | 'black' | 'red' | 'green'
 		;
 PLUS: '+';
 MINUS: '-';

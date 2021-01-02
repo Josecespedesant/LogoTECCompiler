@@ -12,9 +12,9 @@ public class Iguales implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		Object t1 = operand1.execute(symbolTable);
-		Object t2 = operand2.execute(symbolTable);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		Object t1 = operand1.execute(symbolTable, null);
+		Object t2 = operand2.execute(symbolTable, null);
 		return t1.equals(t2);
 	}
 

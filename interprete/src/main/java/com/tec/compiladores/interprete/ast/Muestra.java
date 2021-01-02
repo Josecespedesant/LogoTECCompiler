@@ -11,8 +11,8 @@ public class Muestra implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		System.out.println(data.execute(symbolTable));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		System.out.println(data.execute(symbolTable, null));
 		return null;
 	}
 

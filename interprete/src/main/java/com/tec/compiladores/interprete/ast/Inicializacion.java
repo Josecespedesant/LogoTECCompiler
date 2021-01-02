@@ -12,8 +12,8 @@ public class Inicializacion implements ASTNode {
 		this.expression = expression;
 	}
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		symbolTable.put(name, expression.execute(symbolTable));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		symbolTable.put(name, expression.execute(symbolTable, null));
 		return null;
 	}
 

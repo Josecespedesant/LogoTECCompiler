@@ -13,8 +13,8 @@ public class Incremento2 implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		float inc = (float) ((float) symbolTable.get(name) + (float) Float.parseFloat(String.valueOf(operand.execute(symbolTable))));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		float inc = (float) ((float) symbolTable.get(name) + (float) Float.parseFloat(String.valueOf(operand.execute(symbolTable, null))));
 		symbolTable.put(name, inc);
 		return null;
 	}

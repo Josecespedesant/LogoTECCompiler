@@ -11,7 +11,7 @@ public class Incremento implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		float inc = (float) ((float) symbolTable.get(name) + 1);
 		symbolTable.put(name, inc);
 		return null;

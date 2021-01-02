@@ -2,19 +2,17 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
-public class AsignacionVacia implements ASTNode {
-	private String name;
-	
-	
-	public AsignacionVacia(String name) {
+public class PonColorLapiz implements ASTNode {
+	private String color;
+
+	public PonColorLapiz(String color) {
 		super();
-		this.name = name;
+		this.color = color;
 	}
-
-
+	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		symbolTable.put(name, new Object());
+		turtle.penColor(color);
 		return null;
 	}
 

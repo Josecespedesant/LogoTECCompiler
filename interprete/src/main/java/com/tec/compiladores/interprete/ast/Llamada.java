@@ -16,18 +16,18 @@ public class Llamada implements ASTNode {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		
 		List <ASTNode> body = (List<ASTNode>) ((List<ASTNode>) symbolTable.get(id)).get(0);
 		List <String> parameters = (List<String>) ((List<ASTNode>) symbolTable.get(id)).get(1);
 		Map<String, Object> symbolTableLocal = (Map<String, Object>) ((List<ASTNode>) symbolTable.get(id)).get(2);
 		
 		for(int i = 0; i<parameters.size();i++) {
-			symbolTableLocal.put(parameters.get(i), paramscall.get(i).execute(symbolTableLocal));
+			symbolTableLocal.put(parameters.get(i), paramscall.get(i).execute(symbolTableLocal, null));
 		}
 		
 		for(ASTNode n : body) {
-			n.execute(symbolTableLocal);
+			n.execute(symbolTableLocal, null);
 		}
 		return null;
 	}

@@ -15,8 +15,8 @@ public class Asignacion implements ASTNode {
 
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		symbolTable.put(name, expression.execute(symbolTable));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		symbolTable.put(name, expression.execute(symbolTable, turtle));
 		return null;
 	}
 

@@ -12,9 +12,9 @@ public class ListaLogo implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(ASTNode n : lista) {
-			n.execute(symbolTable);
+			n.execute(symbolTable, null);
 		}
 		return lista;
 	}

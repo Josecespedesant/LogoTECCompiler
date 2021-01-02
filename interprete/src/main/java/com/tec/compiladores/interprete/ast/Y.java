@@ -12,8 +12,8 @@ public class Y implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		return (Boolean) op1.execute(symbolTable) && (Boolean) op2.execute(symbolTable);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		return (Boolean) op1.execute(symbolTable, null) && (Boolean) op2.execute(symbolTable, null);
 	}
 
 }

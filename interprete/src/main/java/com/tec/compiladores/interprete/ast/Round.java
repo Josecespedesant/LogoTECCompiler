@@ -10,8 +10,8 @@ public class Round implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		return (float) Math.round((float)num.execute(symbolTable));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		return (float) Math.round((float)num.execute(symbolTable, null));
 	}
 
 }

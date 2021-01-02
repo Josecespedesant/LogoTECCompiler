@@ -1,16 +1,11 @@
 //aqui va un primer comentario jaja xD
 
-haz x 3
-
-para cuadrado ( r )
-	muestra x
-fin
-
-para triangulo ( s )
-	haz x 6
-	muestra x
-fin 
-
-
-cuadrado ( 6 )
-triangulo ( 4 )
+AV 50
+GD 90
+PCL red
+AV 50
+GD 90
+PCL blue
+AV 50
+GD 90
+centro

@@ -12,9 +12,9 @@ public class Substraction implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable)));
-		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable)));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, null)));
+		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable, null)));
 		return f1-f2;
 	}
 

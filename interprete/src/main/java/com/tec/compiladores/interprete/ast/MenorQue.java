@@ -12,8 +12,8 @@ public class MenorQue implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
-		return (float) op1.execute(symbolTable) < (float) op2.execute(symbolTable);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+		return (float) op1.execute(symbolTable, null) < (float) op2.execute(symbolTable, null);
 	}
 
 }

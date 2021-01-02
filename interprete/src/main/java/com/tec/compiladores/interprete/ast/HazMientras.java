@@ -14,12 +14,12 @@ public class HazMientras implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		do {
 			for(ASTNode n : body) {
-				n.execute(symbolTable);
+				n.execute(symbolTable, null);
 			}
-		} while ( (boolean)condition.execute(symbolTable) );
+		} while ( (boolean)condition.execute(symbolTable, null) );
 		
 		return null;
 	}

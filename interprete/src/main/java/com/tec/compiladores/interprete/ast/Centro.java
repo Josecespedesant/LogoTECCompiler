@@ -2,19 +2,17 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
-public class AsignacionVacia implements ASTNode {
-	private String name;
-	
-	
-	public AsignacionVacia(String name) {
+public class Centro implements ASTNode {
+
+	public Centro() {
 		super();
-		this.name = name;
 	}
-
-
+	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		symbolTable.put(name, new Object());
+		turtle.up();
+		turtle.setPosition(0, 0);
+		turtle.down();
 		return null;
 	}
 
