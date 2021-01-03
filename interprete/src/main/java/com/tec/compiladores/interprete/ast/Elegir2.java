@@ -17,9 +17,9 @@ public class Elegir2 implements ASTNode {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		int max = ((List<ASTNode>) node.execute(symbolTable, null)).size() - 1;
+		int max = ((List<ASTNode>) node.execute(symbolTable, turtle)).size() - 1;
 		randNum =  0 + (int)(Math.random() * ((max - 0) + 1));
-		return ((List<ASTNode>) node.execute(symbolTable, null)).get(randNum).execute(symbolTable, null);
+		return ((List<ASTNode>) node.execute(symbolTable, turtle)).get(randNum).execute(symbolTable, turtle);
 	}
 
 }

@@ -17,7 +17,7 @@ public class Elemento2 implements ASTNode {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		return ((List<ASTNode>) node.execute(symbolTable, null)).get(index).execute(symbolTable, null);
+		return ((List<ASTNode>) node.execute(symbolTable, null)).get(index).execute(symbolTable, turtle);
 	}
 
 }

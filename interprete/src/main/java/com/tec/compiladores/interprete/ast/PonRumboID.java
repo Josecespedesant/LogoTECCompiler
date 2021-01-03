@@ -2,17 +2,18 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
-public class Muestra implements ASTNode {
-	private ASTNode data;
+public class PonRumboID implements ASTNode {
+	private String id;
 
-	public Muestra(ASTNode data) {
+	public PonRumboID(String id) {
 		super();
-		this.data = data;
+		this.id = id;
 	}
-
+	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		System.out.println(data.execute(symbolTable, turtle));
+		float f1 = (float) symbolTable.get(id);
+		turtle.setDirection(f1);
 		return null;
 	}
 

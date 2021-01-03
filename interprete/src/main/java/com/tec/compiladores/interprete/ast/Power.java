@@ -13,8 +13,8 @@ public class Power implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		float f1 = Float.parseFloat(String.valueOf(base.execute(symbolTable, null)));
-		float f2 = Float.parseFloat(String.valueOf(power.execute(symbolTable, null)));
+		float f1 = Float.parseFloat(String.valueOf(base.execute(symbolTable, turtle)));
+		float f2 = Float.parseFloat(String.valueOf(power.execute(symbolTable, turtle)));
 		return (float) Math.pow(f1, f2);
 	}
 

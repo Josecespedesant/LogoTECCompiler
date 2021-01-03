@@ -14,8 +14,8 @@ public class Ultimo2 implements ASTNode {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		int max = ((List<ASTNode>) node.execute(symbolTable, null)).size() - 1;
-		return ((List<ASTNode>) node.execute(symbolTable, null)).get(max).execute(symbolTable, null);
+		int max = ((List<ASTNode>) node.execute(symbolTable, turtle)).size() - 1;
+		return ((List<ASTNode>) node.execute(symbolTable, turtle)).get(max).execute(symbolTable, turtle);
 	}
 
 }

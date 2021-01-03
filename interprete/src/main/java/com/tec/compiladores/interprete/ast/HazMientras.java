@@ -19,7 +19,7 @@ public class HazMientras implements ASTNode {
 			for(ASTNode n : body) {
 				n.execute(symbolTable, null);
 			}
-		} while ( (boolean)condition.execute(symbolTable, null) );
+		} while ( (boolean)condition.execute(symbolTable, turtle) );
 		
 		return null;
 	}

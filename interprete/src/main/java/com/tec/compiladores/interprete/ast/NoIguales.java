@@ -13,8 +13,8 @@ public class NoIguales implements ASTNode {
 	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		Object t1 = operand1.execute(symbolTable, null);
-		Object t2 = operand2.execute(symbolTable, null);
+		Object t1 = operand1.execute(symbolTable, turtle);
+		Object t2 = operand2.execute(symbolTable, turtle);
 		return !t1.equals(t2);
 	}
 

@@ -15,9 +15,9 @@ public class Mientras implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		while((boolean)condition.execute(symbolTable, null)) {
+		while((boolean)condition.execute(symbolTable, turtle)) {
 			for(ASTNode n : body) {
-				n.execute(symbolTable, null);
+				n.execute(symbolTable, turtle);
 			}
 		}
 		return null;

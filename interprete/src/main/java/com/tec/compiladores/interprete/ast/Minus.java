@@ -14,7 +14,7 @@ public class Minus implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		return (float) operand.execute(symbolTable, null) * -1;
+		return (float) operand.execute(symbolTable, turtle) * -1;
 	}
 
 }

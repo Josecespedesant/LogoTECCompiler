@@ -18,10 +18,10 @@ public class Hasta implements ASTNode {
 		boolean flag = true;
 		while(flag) {
 			for(ASTNode n : body) {
-				if((boolean)condition.execute(symbolTable, null) == true) {
+				if((boolean)condition.execute(symbolTable, turtle) == true) {
 					flag = false;
 				}
-				n.execute(symbolTable, null);
+				n.execute(symbolTable, turtle);
 			}
 		}
 		return null;

@@ -60,17 +60,19 @@ inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};
 incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID listable {$node = new Incremento2($ID.text, $listable.node);};
 
-avanza returns [ASTNode node]: AVANZA opera {$node = new Avanza($opera.node);} ;
-retrocede returns [ASTNode node]: RETROCEDE opera {$node = new Retrocede($opera.node);};
-girder returns [ASTNode node]: GIRADERECHA opera {$node = new GirDer($opera.node);};
-girizq returns [ASTNode node]: GIRAIZQUIERDA opera {$node = new GirIzq($opera.node);};
-ponpos returns [ASTNode node]: PONPOS t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);} 
-							| PONXY t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);};
-ponrumbo returns [ASTNode node]: PONRUMBO opera {$node = new PonRumbo($opera.node);};
-ponx returns [ASTNode node]: PONX opera {$node = new PonX($opera.node);};
-pony returns [ASTNode node]: PONY opera {$node = new PonY($opera.node);};
+avanza returns [ASTNode node]: AVANZA opera {$node = new Avanza($opera.node);} | AVANZA ID {$node = new AvanzaID($ID.text);};
+retrocede returns [ASTNode node]: RETROCEDE opera {$node = new Retrocede($opera.node);} | RETROCEDE ID {$node = new RetrocedeID($ID.text);};
+girder returns [ASTNode node]: GIRADERECHA opera {$node = new GirDer($opera.node);} | GIRADERECHA ID {$node = new GirDerID($ID.text);};
+girizq returns [ASTNode node]: GIRAIZQUIERDA opera {$node = new GirIzq($opera.node);} | GIRAIZQUIERDA ID {$node = new GirIzqID($ID.text);};
+ponpos returns [ASTNode node]: PONPOS t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);}
+								| PONPOS t3 = ID t4 = ID {$node = new PonPos1($t3.text, $t4.text);}
+								| PONPOS t5 = opera t6 = ID {$node = new PonPos2($t5.node,$t6.text);}
+								| PONPOS t7 = ID t8 = opera {$node = new PonPos3($t7.text,$t8.node);};
+ponrumbo returns [ASTNode node]: PONRUMBO opera {$node = new PonRumbo($opera.node);} | PONRUMBO ID {$node = new PonRumboID($ID.text);};
+ponx returns [ASTNode node]: PONX opera {$node = new PonX($opera.node);} | PONRUMBO ID {$node = new PonXID($ID.text);};
+pony returns [ASTNode node]: PONY opera {$node = new PonY($opera.node);} | PONY ID {$node = new PonYID($ID.text);};
 pnclrlapiz returns [ASTNode node]: PONCOLORLAPIZ COLOR {$node = new PonColorLapiz($COLOR.text);};
-espera returns [ASTNode node]: ESPERA opera {$node = new Espera($opera.node);};
+espera returns [ASTNode node]: ESPERA opera {$node = new Espera($opera.node);} | ESPERA ID {$node = new EsperaID($ID.text);};
 
 /* Expresión regular de un procedimiento
  * Debe tener la palabra clave para, seguida de un identificador que debe comenzar con minuscula con un maximo de 10 caracteres
@@ -260,8 +262,7 @@ GIRADERECHA: 'GD'|'giraderecha';
 GIRAIZQUIERDA: 'GI' | 'giraizquierda';
 OCULTATORTUGA: 'OT' | 'ocultatortuga';
 APARECETORTUGA: 'AT' 'aparecetortuga';
-PONPOS: 'ponPos';
-PONXY: 'ponXY';
+PONPOS: 'ponPos' | 'ponXY';
 PONRUMBO: 'ponRumbo';
 RUMBO: 'rumbo';
 MUESTRA: 'muestra';

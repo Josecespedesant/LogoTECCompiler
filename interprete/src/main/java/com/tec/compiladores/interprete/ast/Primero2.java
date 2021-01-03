@@ -14,7 +14,7 @@ public class Primero2 implements ASTNode {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		return ((List<ASTNode>) node.execute(symbolTable, null)).get(0).execute(symbolTable, null);
+		return ((List<ASTNode>) node.execute(symbolTable, turtle)).get(0).execute(symbolTable, turtle);
 	}
 
 }

@@ -13,8 +13,8 @@ public class Multiplication implements ASTNode {
 	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, null)));
-		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable, null)));
+		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, turtle)));
+		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable, turtle)));
 		return f1*f2;
 	}
 

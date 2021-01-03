@@ -13,7 +13,7 @@ public class Inicializacion implements ASTNode {
 	}
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		symbolTable.put(name, expression.execute(symbolTable, null));
+		symbolTable.put(name, expression.execute(symbolTable, turtle));
 		return null;
 	}
 

@@ -14,7 +14,7 @@ public class ListaLogo implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(ASTNode n : lista) {
-			n.execute(symbolTable, null);
+			n.execute(symbolTable, turtle);
 		}
 		return lista;
 	}

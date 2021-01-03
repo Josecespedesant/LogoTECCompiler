@@ -21,7 +21,7 @@ public class Elegir implements ASTNode {
 		List<Float> lista2 = new ArrayList<Float>();
 		
 		for(int i = 0; i<lista.size(); i++) {
-			lista2.add((Float) lista.get(i).execute(symbolTable, null));
+			lista2.add((Float) lista.get(i).execute(symbolTable, turtle));
 		}
 		
 		int max = lista2.size() - 1;

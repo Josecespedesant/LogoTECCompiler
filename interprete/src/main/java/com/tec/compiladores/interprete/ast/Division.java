@@ -13,8 +13,8 @@ public class Division implements ASTNode {
 	
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, null)));
-		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable, null)));
+		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, turtle)));
+		float f2 = Float.parseFloat(String.valueOf(operand2.execute(symbolTable, turtle)));
 		
 		if (f2 == 0){
 			System.out.println("Division by 0 undefined\n");

@@ -1,11 +1,10 @@
 //aqui va un primer comentario jaja xD
 
-AV 50
-GD 90
-PCL red
-AV 50
-GD 90
-PCL blue
-AV 50
-GD 90
-centro
+
+para cuadrado
+	haz x 50
+	haz e 90
+	repite 4 [ AV x , GD e ]
+fin
+
+cuadrado ()

@@ -17,7 +17,7 @@ public class Repite implements ASTNode {
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(int i=0; i<times; i++) {
 			for(ASTNode n : body) {
-				n.execute(symbolTable, null);
+				n.execute(symbolTable, turtle);
 			}
 		}
 		return null;

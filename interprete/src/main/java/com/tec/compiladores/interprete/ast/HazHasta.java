@@ -18,10 +18,10 @@ public class HazHasta implements ASTNode {
 		boolean flag = true;
 		do {
 			for(ASTNode n : body) {
-				if((boolean)condition.execute(symbolTable, null) == true) {
+				if((boolean)condition.execute(symbolTable, turtle) == true) {
 					flag = false;
 				}
-				n.execute(symbolTable, null);
+				n.execute(symbolTable, turtle);
 			}
 		} while ( flag );
 		

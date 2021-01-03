@@ -14,7 +14,7 @@ public class Execute implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
 		for(ASTNode n : body) {
-			n.execute(symbolTable, null);
+			n.execute(symbolTable, turtle);
 		}
 		return null;
 	}

@@ -14,7 +14,7 @@ public class Azar implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		randNum =  0 + (int)(Math.random() * (((int)max.execute(symbolTable, null) - 0) + 1));
+		randNum =  0 + (int)(Math.random() * (((int)max.execute(symbolTable, turtle) - 0) + 1));
 		return randNum;
 	}
 
