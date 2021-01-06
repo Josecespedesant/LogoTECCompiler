@@ -1,10 +1,24 @@
 //aqui va un primer comentario jaja xD
 
-
-para cuadrado
-	haz x 50
-	haz e 90
-	repite 4 [ AV x , GD e ]
+para estrella
+	repite 180 [ AV 100 , 
+				 GD 30  ,
+				 AV 20  ,
+				 GI 60  ,
+				 AV 50  ,
+				 GD 30  ,
+				 SL ,
+				 ponPos 0 0 ,
+				 BL ,
+				 GD 2
+				  ]
 fin
 
-cuadrado ()
+para florava
+	estrella ()
+	repite 12 [ repite 75 [ AV 100 , RE 100 , GD 2 ] , AV 250 ]
+	zoomfit
+fin
+
+
+florava ()

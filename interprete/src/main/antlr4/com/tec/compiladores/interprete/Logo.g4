@@ -34,6 +34,7 @@ mostrable returns [ASTNode node]:
 	sentence {$node = $sentence.node;}
 	|opera {$node = $opera.node;} 
 	|comparar {$node = $comparar.node;}
+	|ID {$node = new VarRef($ID.text);}
 ;
 
 listable returns [ASTNode node]:
@@ -50,7 +51,7 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	| si {$node = $si.node;}| sisino {$node = $sisino.node;}| hazhasta {$node = $hazhasta.node;} | hasta {$node = $hasta.node;} |
 	hazmientras {$node = $hazmientras.node;} | mientras {$node = $mientras.node;}|  elegir {$node = $elegir.node;} | cuenta {$node = $cuenta.node;} | ultimo {$node = $ultimo.node;} | 
 	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA {$node = new OcultaTortuga();} | APARECETORTUGA {$node = new ApareceTortuga();} | llamada {$node = $llamada.node;} |
-	RUMBO {$node = new Rumbo();}| GOMA {$node = new Goma();} | BAJALAPIZ {$node = new Baja();} | SUBELAPIZ {$node = new Sube();} | CENTRO {$node = new Centro();} | BORRAPANTALLA {$node = new BorraPantalla();}) NEWLINE* ;
+	RUMBO {$node = new Rumbo();}| ZOOMFIT {$node = new ZoomFit();} | GOMA {$node = new Goma();} | BAJALAPIZ {$node = new Baja();} | SUBELAPIZ {$node = new Sube();} | CENTRO {$node = new Centro();} | BORRAPANTALLA {$node = new BorraPantalla();}| repite {$node = $repite.node;}) NEWLINE* ;
 	
  
 asignacion returns [ASTNode node]: HAZ ID listable 
@@ -148,28 +149,66 @@ mientras returns [ASTNode node]:
  */
 comparar returns [ASTNode node]:
 	t1 = opera GT t2 = opera {$node = new MayorQue($t1.node,$t2.node);}
-	|t1 = opera LT t2 = opera {$node = new MenorQue($t1.node, $t2.node);}
-	|t1 = opera GEQ t2 = opera {$node = new MayorIgualQue($t1.node, $t2.node);}
-	|t1 = opera EQ t2 = opera {$node = new Iguales($t1.node, $t2.node);}
-	|t1 = opera LEQ t2 = opera {$node = new MenorIgualQue($t1.node, $t2.node);}
-	|t1 = opera NEQ t2 = opera {$node = new NoIguales($t1.node, $t2.node);}
-	|t10 = iguales {$node = $t10.node;}
-	|t11 = y {$node = $t11.node;} 
-	|t12 = o {$node = $t12.node;}
-	|t13 = mayorque {$node = $t13.node;} 
-	|t14 = menorque {$node = $t14.node;}
+	|t3 = ID GT t4 = opera {$node = new MayorQue(new VarRef($t3.text),$t4.node);}
+	|t5 = opera GT t6 = ID {$node = new MayorQue($t5.node,new VarRef($t6.text));}
+	|t7 = ID GT t8 = ID {$node = new MayorQue(new VarRef($t7.text),new VarRef($t8.text));}
+	
+	|t9 = opera LT t10 = opera {$node = new MenorQue($t9.node,$t10.node);}
+	|t11 = ID LT t12 = opera {$node = new MenorQue(new VarRef($t11.text),$t12.node);}
+	|t13 = opera LT t14 = ID {$node = new MenorQue($t13.node,new VarRef($t14.text));}
+	|t15 = ID LT t16 = ID {$node = new MenorQue(new VarRef($t15.text),new VarRef($t16.text));}
+	
+	|t17 = opera GEQ t18 = opera {$node = new MayorIgualQue($t17.node,$t18.node);}
+	|t19 = ID GEQ t20 = opera {$node = new MayorIgualQue(new VarRef($t19.text),$t20.node);}
+	|t21 = opera GEQ t22 = ID {$node = new MayorIgualQue($t21.node,new VarRef($t22.text));}
+	|t23 = ID GEQ t24 = ID {$node = new MayorIgualQue(new VarRef($t23.text),new VarRef($t24.text));}
+
+	|t25 = opera EQ t26 = opera {$node = new Iguales($t25.node,$t26.node);}
+	|t27 = ID EQ t28 = opera {$node = new Iguales(new VarRef($t27.text),$t28.node);}
+	|t29 = opera EQ t30 = ID {$node = new Iguales($t29.node,new VarRef($t30.text));}
+	|t31 = ID EQ t32 = ID {$node = new Iguales(new VarRef($t31.text),new VarRef($t32.text));}
+	
+	|t33 = opera LEQ t34 = opera {$node = new MenorIgualQue($t33.node,$t34.node);}
+	|t35 = ID LEQ t36 = opera {$node = new MenorIgualQue(new VarRef($t35.text),$t36.node);}
+	|t37 = opera LEQ t38 = ID {$node = new MenorIgualQue($t37.node,new VarRef($t38.text));}
+	|t39 = ID LEQ t40 = ID {$node = new MenorIgualQue(new VarRef($t39.text),new VarRef($t40.text));}
+	
+	|t41 = opera NEQ t42 = opera {$node = new NoIguales($t41.node,$t42.node);}
+	|t43 = ID NEQ t44 = opera {$node = new NoIguales(new VarRef($t43.text),$t44.node);}
+	|t45 = opera NEQ t46 = ID {$node = new NoIguales($t45.node,new VarRef($t46.text));}
+	|t47 = ID NEQ t48 = ID {$node = new NoIguales(new VarRef($t47.text),new VarRef($t48.text));}
+	
+	|iguales {$node = $iguales.node;}
+	|y {$node = $y.node;} 
+	|o {$node = $o.node;}
+	|mayorque {$node = $mayorque.node;} 
+	|menorque {$node = $menorque.node;}
 	|BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}|	
 	; 
 //Operadores de comparación (PUEDEN IR EN CONDICIONALES, RETORNAN UN VALOR BOOLEANO)
 iguales returns [ASTNode node]: 
-	IGUALES t1 = expression t2 = expression {$node = new Iguales($t1.node, $t2.node);};
+	IGUALES t1 = expression t2 = expression {$node = new Iguales($t1.node, $t2.node);}
+	|IGUALES t3 = ID t4 = expression {$node = new Iguales(new VarRef($t3.text), $t4.node);}
+	|IGUALES t5 = expression t6 = ID {$node = new Iguales($t5.node, new VarRef($t6.text));}
+	|IGUALES t7 = ID t8 = ID {$node = new Iguales(new VarRef($t7.text), new VarRef($t8.text));}
+	;
 	
 y returns [ASTNode node]: Y PAR_OPEN t1 = comparar PAR_CLOSE PAR_OPEN t2 = comparar  PAR_CLOSE 
 		{$node = new Y($t1.node, $t2.node);};
 o returns [ASTNode node]: O PAR_OPEN t1 = comparar PAR_CLOSE PAR_OPEN t2 = comparar PAR_CLOSE
 		{$node = new O($t1.node, $t2.node);};
-mayorque returns [ASTNode node]: MAYORQUE t1= opera t2=opera  {$node = new MayorQue($t1.node, $t2.node);};
-menorque returns [ASTNode node]: MENORQUE t1 = opera t2= opera {$node = new MenorQue($t1.node, $t2.node);};
+		
+		
+mayorque returns [ASTNode node]: MAYORQUE t1= opera t2=opera  {$node = new MayorQue($t1.node, $t2.node);}
+                        		|MAYORQUE t3= ID t4=opera  {$node = new MayorQue(new VarRef($t3.text), $t4.node);}
+                        		|MAYORQUE t5= opera t6=ID  {$node = new MayorQue($t5.node, new VarRef($t6.text));}
+                        		|MAYORQUE t7= ID t8=ID  {$node = new MayorQue(new VarRef($t7.text), new VarRef($t8.text));};
+
+
+menorque returns [ASTNode node]: MENORQUE t1= opera t2=opera  {$node = new MenorQue($t1.node, $t2.node);}
+                        		|MENORQUE t3= ID t4=opera  {$node = new MenorQue(new VarRef($t3.text), $t4.node);}
+                        		|MENORQUE t5= opera t6=ID  {$node = new MenorQue($t5.node, new VarRef($t6.text));}
+                        		|MENORQUE t7= ID t8=ID  {$node = new MenorQue(new VarRef($t7.text), new VarRef($t8.text));};
 	
 // OPERACIONES NUMERICAS, DEVUELVEN UN NUEMRO
 opera returns [ASTNode node]
@@ -184,7 +223,16 @@ opera returns [ASTNode node]
 	|t8 = resto {$node = $t8.node;}
 	|t9 = suma {$node = $t9.node;}
 	|t15 = redondea {$node = $t15.node;} 
+	|t16 = seno {$node = $t16.node;}
+	|t17 = coseno {$node = $t17.node;}
 	;	
+seno returns [ASTNode node]:
+	SENO ID {$node = new Seno(new VarRef($ID.text));}| SENO opera {$node = new Seno($opera.node);};	
+	
+coseno returns [ASTNode node]:
+	COSENO ID {$node = new Coseno(new VarRef($ID.text));}| COSENO opera {$node = new Coseno($opera.node);};	
+
+
 expression returns [ASTNode node]:
 	t1 = factor {$node = $t1.node;}
 	(PLUS t2 = factor{$node = new Addition($node, $t2.node);}
@@ -199,7 +247,7 @@ term returns [ASTNode node]:
 	ID {$node = new VarRef($ID.text);}|
 	INTEGER {$node = new Constant(Float.parseFloat($INTEGER.text));}|
 	FLOAT {$node = new Constant(Float.parseFloat($FLOAT.text));}|
-	PAR_OPEN expression {$node = $expression.node;} PAR_CLOSE;
+	PAR_OPEN opera {$node = $opera.node;} PAR_CLOSE;
 
 //OPERACIONES ALGEBRAICAS, DEVUELVEN UN NUMERO
 
@@ -283,6 +331,7 @@ HASTA: 'hasta';
 HAZMIENTRAS: 'haz.mientras';
 MIENTRAS: 'mientras';
 IGUALES: 'iguales?';
+ZOOMFIT: 'zoomfit';
 Y: 'y';
 O: 'o';
 MAYORQUE: 'mayorQue?';
@@ -304,6 +353,8 @@ PRIMERO: 'primero';
 BORRAPANTALLA: 'borraPantalla';
 COLOR: 'white' | 'blue' | 'brown' | 'cyan' | 'grey' | 'yellow' | 'black' | 'red' | 'green'
 		;
+SENO: 'sen';
+COSENO: 'cos';
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
