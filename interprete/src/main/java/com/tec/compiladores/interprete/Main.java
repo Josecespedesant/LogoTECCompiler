@@ -20,6 +20,7 @@ public class Main {
 	
 
 	public static void main(String[] args) throws IOException {
+		
 		String program = args.length > 1 ? args[1] : "test/test." + EXTENSION;
 
 		System.out.println("Interpreting file " + program);
@@ -27,6 +28,7 @@ public class Main {
 		LogoLexer lexer = new LogoLexer(new ANTLRFileStream(program));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		LogoParser parser = new LogoParser(tokens);
+		parser.turtle = new Turtle();
 		ParseTree tree = parser.program(); 
 		//LogoParser.ProgramContext tree = parser.program();
 		System.out.println(tree.toStringTree(parser));

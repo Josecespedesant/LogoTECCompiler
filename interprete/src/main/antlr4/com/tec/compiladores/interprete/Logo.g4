@@ -9,6 +9,8 @@ grammar Logo;
 }
 @parser::members{
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
+	List<ASTNode> body = new ArrayList<ASTNode>();
+	public Turtle turtle;
 }
 
 /* Gramatica de un programa.
@@ -16,10 +18,6 @@ grammar Logo;
 * Un programa puede tener procedimientos, sentencias, llamadas o comentarios. 
 * Entre cada una de ellas puede haber N cantidad de espacios*/
 program: 
-	{
-		List<ASTNode> body = new ArrayList<ASTNode>();
-		Turtle turtle = new Turtle();
-	}
 	comentario
 	NEWLINE*
 	(procedimiento {body.add($procedimiento.node);} | sentence {body.add($sentence.node);}| comentario)*

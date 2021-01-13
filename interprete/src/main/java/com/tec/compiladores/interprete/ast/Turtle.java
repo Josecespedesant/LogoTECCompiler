@@ -53,7 +53,7 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
     private static HashMap<String, Color> colors;
     private static HashMap<String,ArrayList<ArrayList>> keyBindings;
     private static HashMap<Turtle,ArrayList<ArrayList>> mouseBindings;
-    private static double centerX, centerY;
+    public static double centerX, centerY;
     private static double scale;
     private static TreeSet<String> keysDown;
     private static TreeSet<String> processedKeys;
@@ -102,7 +102,7 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         }
     }
 
-    private void renderLoop()
+    private static void renderLoop()
     {
         //System.out.println("RENDER LOOP STARTED");
         long time=0;
@@ -127,53 +127,12 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         }
         else return false;
     }
-    
-    private static JPanel interfaz;
-	private static JButton carg;
-	private static JButton comp;
-	private static JButton ejec;
-	private static JButton print;
-	private static JTextArea area;
-	private static JScrollPane pane;
+
 	
-    private static void init()
+    public static void init()
     {
         //mouseBindings.put(null, new ArrayList<ArrayList>());
     	
-    	//Esto es nuestro
-    	carg = new JButton("Cargar");
-    	comp = new JButton("Compillar");
-    	ejec = new JButton("Ejecutar");
-    	print = new JButton("Imprimir");
-    	area = new JTextArea("Introducir código...");
-    	area.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				area.selectAll();				
-			}
-
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				return;
-			}
-    		
-    	});
-    	pane = new JScrollPane(area);
-    	pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    	
-    	JPanel panel2 = new JPanel();
-    	panel2.setLayout(new FlowLayout());
-    	
-    	panel2.add(carg); panel2.add(comp);panel2.add(ejec);panel2.add(print);
-    	
-    	interfaz = new JPanel();
-    	interfaz.setLayout(new BoxLayout(interfaz, BoxLayout.Y_AXIS));
-    	interfaz.add(area);
-    	interfaz.add(panel2);
-    	//Hasta aquí es nuestro
-    	
-    	//Esto es propio de Turtle
         turtles=new ArrayList<Turtle>();
         turtleStates=new TreeMap<Long,ArrayList>();
         redoStates=new TreeMap<Long,ArrayList>();
@@ -205,17 +164,8 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         
         draw = new JLabel(icon);
         
-        //Esto es nuestro jeje
-        JPanel container = new JPanel();
-        JPanel drawcontainer = new JPanel();
-        container.setLayout(new GridLayout(1,2));
+        window.add(draw);
         
-        drawcontainer.add(draw);
-        
-        container.add(drawcontainer);
-        container.add(interfaz);
-        window.add(container);
-        //Hasta aquí
         
         //window.setContentPane(draw);
         //window.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
@@ -486,6 +436,10 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         }
         catch (Exception e) {}
     }
+    
+    public JFrame getFrame() {
+    	return window;
+    }
 
     private static void makeShapes()
     {
@@ -620,6 +574,19 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
     {
         if(window==null)init();
         synchronized(turtleLock){turtles.add(this);}
+        long time=storeCurrentState();
+        updateAll();
+    }
+    
+    public Turtle(String s) {
+        updateAll();
+
+    }
+    
+    public void redoAgain() {
+    	init();
+    	
+    	synchronized(turtleLock){turtles.add(this);}
         long time=storeCurrentState();
         updateAll();
     }
