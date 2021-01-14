@@ -26,6 +26,9 @@ public class Main {
 		System.out.println("Interpreting file " + program);
 
 		LogoLexer lexer = new LogoLexer(new ANTLRFileStream(program));
+		lexer.removeErrorListeners();
+		//lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
+		
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		LogoParser parser = new LogoParser(tokens);
 		parser.turtle = new Turtle();
