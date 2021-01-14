@@ -146,6 +146,10 @@ public class GUI {
 		        frame.setVisible(true);
 				LogoCustomVisitor visitor = new LogoCustomVisitor();
 				visitor.visit(tree);
+				JScrollPane jScrollPane = new JScrollPane(panel);
+				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				frame.getContentPane().add(jScrollPane);
 				
 			}
         	
