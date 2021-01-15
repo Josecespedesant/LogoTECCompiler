@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Muestra implements ASTNode {
 	private ASTNode data;
 
@@ -11,8 +13,10 @@ public class Muestra implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		System.out.println(data.execute(symbolTable, turtle));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		if(consola!=null) {
+			consola.setText(data.execute(symbolTable, turtle, consola).toString());
+		}
 		return null;
 	}
 

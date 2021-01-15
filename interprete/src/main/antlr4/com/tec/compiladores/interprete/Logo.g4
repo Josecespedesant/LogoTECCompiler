@@ -6,11 +6,13 @@ grammar Logo;
 	import java.util.Random;
 	import java.util.ArrayList;
 	import com.tec.compiladores.interprete.ast.*;
+	import javax.swing.JTextArea;
 }
 @parser::members{
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 	List<ASTNode> body = new ArrayList<ASTNode>();
 	public Turtle turtle;
+	public JTextArea consola;
 }
 
 /* Gramatica de un programa.
@@ -22,19 +24,28 @@ program:
 	NEWLINE*
 	(procedimiento {body.add($procedimiento.node);} | sentence {body.add($sentence.node);}| comentario)*
 	NEWLINE*
-	{for (ASTNode n : body){n.execute(symbolTable, turtle);}}
+	{	for (ASTNode n : body){
+			if(turtle.id == "a"){
+				for(ASTNode n2 : body){
+					n2 = new Nada();
+					n2.execute(symbolTable, turtle, consola);
+				}
+			}else{
+				n.execute(symbolTable, turtle, consola);
+			}
+		}
+	}
 	;
 
 //Gramática de un comentario, comienza con dos barras inclinadas y termina en endline
 comentario: NEWLINE* COMENTARIO NEWLINE*; 
-
 
 mostrable returns [ASTNode node]:
 	sentence {$node = $sentence.node;}
 	|opera {$node = $opera.node;} 
 	|comparar {$node = $comparar.node;}
 	|ID {$node = new VarRef($ID.text);}
-;
+	;
 
 listable returns [ASTNode node]:
 	opera {$node = $opera.node;}
@@ -49,8 +60,16 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	ponpos {$node = $ponpos.node;} | ponrumbo {$node = $ponrumbo.node;} | ponx {$node = $ponx.node;} | pony {$node = $pony.node;} | pnclrlapiz {$node = $pnclrlapiz.node;} | espera {$node = $espera.node;}| s15 = ejecuta {$node = $s15.node;} | s16 = repite {$node = $s16.node;} 
 	| si {$node = $si.node;}| sisino {$node = $sisino.node;}| hazhasta {$node = $hazhasta.node;} | hasta {$node = $hasta.node;} |
 	hazmientras {$node = $hazmientras.node;} | mientras {$node = $mientras.node;}|  elegir {$node = $elegir.node;} | cuenta {$node = $cuenta.node;} | ultimo {$node = $ultimo.node;} | 
-	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| OCULTATORTUGA {$node = new OcultaTortuga();} | APARECETORTUGA {$node = new ApareceTortuga();} | llamada {$node = $llamada.node;} |
-	RUMBO {$node = new Rumbo();}| ZOOMFIT {$node = new ZoomFit();} | GOMA {$node = new Goma();} | BAJALAPIZ {$node = new Baja();} | SUBELAPIZ {$node = new Sube();} | CENTRO {$node = new Centro();} | BORRAPANTALLA {$node = new BorraPantalla();}| repite {$node = $repite.node;}) NEWLINE* ;
+	elemento {$node = $elemento.node;}| primero {$node = $primero.node;}| 
+	OCULTATORTUGA {if(turtle.id == "a"){$node = new Nada();}else{$node = new OcultaTortuga();}}  | 
+	APARECETORTUGA {if(turtle.id == "a"){$node = new Nada();}else{$node = new ApareceTortuga();}}  | llamada {$node = $llamada.node;} |
+	RUMBO {$node = new Rumbo();}| 
+	ZOOMFIT {if(turtle.id == "a"){$node = new Nada();}else{$node = new ZoomFit();}} | 
+	GOMA {if(turtle.id == "a"){$node = new Nada();}else{$node = new Goma();}} | 
+	BAJALAPIZ {if(turtle.id == "a"){$node = new Nada();}else{$node = new Baja();}} | 
+	SUBELAPIZ {if(turtle.id == "a"){$node = new Nada();}else{$node = new Sube();}}  | 
+	CENTRO {if(turtle.id == "a"){$node = new Nada();}else{$node = new Centro();}}  | 
+	BORRAPANTALLA {if(turtle.id == "a"){$node = new Nada();}else{$node = new BorraPantalla();}} | repite {$node = $repite.node;}) NEWLINE* ;
 	
  
 asignacion returns [ASTNode node]: HAZ ID listable 
@@ -60,8 +79,12 @@ inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};
 incremento returns [ASTNode node]: INC ID {$node = new Incremento($ID.text);} | INC ID listable {$node = new Incremento2($ID.text, $listable.node);};
 
-avanza returns [ASTNode node]: AVANZA opera {$node = new Avanza($opera.node);} | AVANZA ID {$node = new AvanzaID($ID.text);};
-retrocede returns [ASTNode node]: RETROCEDE opera {$node = new Retrocede($opera.node);} | RETROCEDE ID {$node = new RetrocedeID($ID.text);};
+avanza returns [ASTNode node]: AVANZA opera {$node = new Avanza($opera.node);}
+				| AVANZA ID {$node = new AvanzaID($ID.text);};
+				
+retrocede returns [ASTNode node]: RETROCEDE opera {$node = new Retrocede($opera.node);}
+				| RETROCEDE ID {$node = new RetrocedeID($ID.text);};
+				
 girder returns [ASTNode node]: GIRADERECHA opera {$node = new GirDer($opera.node);} | GIRADERECHA ID {$node = new GirDerID($ID.text);};
 girizq returns [ASTNode node]: GIRAIZQUIERDA opera {$node = new GirIzq($opera.node);} | GIRAIZQUIERDA ID {$node = new GirIzqID($ID.text);};
 ponpos returns [ASTNode node]: PONPOS t1 = opera t2 = opera {$node = new PonPos($t1.node,$t2.node);}
@@ -98,12 +121,10 @@ llamada returns [ASTNode node]:
 	procName=ID PAR_OPEN (param = listable {paramList.add($param.node);} (COMMA paramn = listable {paramList.add($paramn.node);})*)? PAR_CLOSE
 	{$node = new Llamada($procName.text, paramList);}
 	;
-
 ejecuta returns [ASTNode node]: EJECUTA
 	{List <ASTNode> body = new ArrayList<ASTNode>();}
 	PAR_SQ_OPEN t1=sentence {body.add($t1.node);} (COMMA t2=sentence {body.add($t2.node);})* PAR_SQ_CLOSE
 	{$node = new Execute(body);};
-
 repite returns [ASTNode node]: REPITE INTEGER 
 	{List <ASTNode> body = new ArrayList<ASTNode>();}
 	PAR_SQ_OPEN t1=sentence {body.add($t1.node);} (COMMA t2=sentence {body.add($t2.node);})* PAR_SQ_CLOSE
@@ -184,6 +205,7 @@ comparar returns [ASTNode node]:
 	|menorque {$node = $menorque.node;}
 	|BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}|	
 	; 
+	
 //Operadores de comparación (PUEDEN IR EN CONDICIONALES, RETORNAN UN VALOR BOOLEANO)
 iguales returns [ASTNode node]: 
 	IGUALES t1 = expression t2 = expression {$node = new Iguales($t1.node, $t2.node);}
@@ -230,7 +252,6 @@ seno returns [ASTNode node]:
 	
 coseno returns [ASTNode node]:
 	COSENO ID {$node = new Coseno(new VarRef($ID.text));}| COSENO opera {$node = new Coseno($opera.node);};	
-
 
 expression returns [ASTNode node]:
 	t1 = factor {$node = $t1.node;}

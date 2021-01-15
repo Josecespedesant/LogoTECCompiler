@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Incremento2 implements ASTNode {
 	private String name;
 	private ASTNode operand;
@@ -13,8 +15,8 @@ public class Incremento2 implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		float inc = (float) ((float) symbolTable.get(name) + (float) Float.parseFloat(String.valueOf(operand.execute(symbolTable, turtle))));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		float inc = (float) ((float) symbolTable.get(name) + (float) Float.parseFloat(String.valueOf(operand.execute(symbolTable, turtle, consola))));
 		symbolTable.put(name, inc);
 		return null;
 	}

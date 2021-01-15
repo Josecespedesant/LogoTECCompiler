@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class AsignacionVacia implements ASTNode {
 	private String name;
 	
@@ -13,7 +15,7 @@ public class AsignacionVacia implements ASTNode {
 
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
 		symbolTable.put(name, new Object());
 		return null;
 	}

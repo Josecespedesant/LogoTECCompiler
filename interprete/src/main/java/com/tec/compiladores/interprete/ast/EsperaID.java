@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class EsperaID implements ASTNode {
 	private String string;
 
@@ -11,7 +13,7 @@ public class EsperaID implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
 		float f1 = (float) symbolTable.get(string) / 60;
 		try {
 			Thread.sleep((long) f1);

@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Iguales implements ASTNode {
 	private ASTNode operand1, operand2;
 
@@ -12,9 +14,9 @@ public class Iguales implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		Object t1 = operand1.execute(symbolTable, turtle);
-		Object t2 = operand2.execute(symbolTable, turtle);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		Object t1 = operand1.execute(symbolTable, turtle, consola);
+		Object t2 = operand2.execute(symbolTable, turtle, consola);
 		return t1.equals(t2);
 	}
 

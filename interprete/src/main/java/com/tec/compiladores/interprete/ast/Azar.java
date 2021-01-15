@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Azar implements ASTNode {
 	private int randNum;
 	private ASTNode max;	
@@ -13,8 +15,8 @@ public class Azar implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		randNum =  0 + (int)(Math.random() * (((int)max.execute(symbolTable, turtle) - 0) + 1));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		randNum =  0 + (int)(Math.random() * (((int)max.execute(symbolTable, turtle, consola) - 0) + 1));
 		return randNum;
 	}
 

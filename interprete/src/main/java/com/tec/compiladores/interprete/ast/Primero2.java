@@ -3,6 +3,8 @@ package com.tec.compiladores.interprete.ast;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Primero2 implements ASTNode {
 	private ASTNode node;
 	
@@ -13,8 +15,8 @@ public class Primero2 implements ASTNode {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		return ((List<ASTNode>) node.execute(symbolTable, turtle)).get(0).execute(symbolTable, turtle);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		return ((List<ASTNode>) node.execute(symbolTable, turtle, consola)).get(0).execute(symbolTable, turtle, consola);
 	}
 
 }

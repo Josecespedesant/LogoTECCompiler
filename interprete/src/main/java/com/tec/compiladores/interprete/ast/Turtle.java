@@ -208,6 +208,13 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         (new Thread(turtle,"render")).start();
         (new Thread(turtle,"listen")).start();
     }
+    
+    public static void saveImage(Label label) {
+    	 BufferedImage img = new BufferedImage(label.getWidth(), label.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    	 Graphics2D g2d = img.createGraphics();
+    	 label.printAll(g2d);
+    	 g2d.dispose();
+    }
 
     public static void exit()
     {
@@ -567,13 +574,21 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
     private Integer __justification;
     private Point2D.Double __textOffset;
 
+    public String id;
     /**
      * Makes a default turtle.
      */
     public Turtle()
     {
+    	this.id = "m";
         if(window==null)init();
         synchronized(turtleLock){turtles.add(this);}
+        long time=storeCurrentState();
+        updateAll();
+    }
+    
+    public Turtle(String a) {
+    	this.id = a;
         long time=storeCurrentState();
         updateAll();
     }
@@ -2254,6 +2269,7 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
     {
         if(((JMenuItem)e.getSource()).getText().equals("Save..."))
         {
+        	
             JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
             chooser.setFileFilter(new FileNameExtensionFilter("Image (*.jpg, *.jpeg, *.gif, *.bmp, *.png)", "jpg", "png", "jpeg", "bmp", "gif"));
             int option = chooser.showSaveDialog(window);
@@ -2261,8 +2277,18 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
             {
                 if(chooser.getSelectedFile()!=null)
                 {
+                	BufferedImage img = new BufferedImage(draw.getWidth(), draw.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                	Graphics2D g2d = img.createGraphics();
+                	draw.printAll(g2d);
+                	g2d.dispose();
                     File file = chooser.getSelectedFile();
-                    save(file);
+                    try {
+						ImageIO.write(img, "png", file);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                    
                 }
             }
         }

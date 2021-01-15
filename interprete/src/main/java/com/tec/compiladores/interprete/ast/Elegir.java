@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Elegir implements ASTNode {
 	private int randNum;
 	private String id;
@@ -16,12 +18,12 @@ public class Elegir implements ASTNode {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
 		List<ASTNode> lista = (List<ASTNode>) symbolTable.get(id);
 		List<Float> lista2 = new ArrayList<Float>();
 		
 		for(int i = 0; i<lista.size(); i++) {
-			lista2.add((Float) lista.get(i).execute(symbolTable, turtle));
+			lista2.add((Float) lista.get(i).execute(symbolTable, turtle, null));
 		}
 		
 		int max = lista2.size() - 1;

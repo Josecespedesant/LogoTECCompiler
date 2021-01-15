@@ -21,6 +21,7 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -103,15 +104,11 @@ public class GUI {
     	Border border2 = BorderFactory.createLineBorder(Color.black);
     	consola.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
     	
-    //	consola.setPreferredSize(new Dimension(500,250));
-    	//area.setPreferredSize(new Dimension(500,250));
     	
     	consola.setEditable(false);
     	interfaz = new JPanel();
     	interfaz.setLayout(new BoxLayout(interfaz, BoxLayout.Y_AXIS));
-    	//interfaz.add(area);
     	interfaz.add(scroll1);
-    	//interfaz.add(consola);
     	interfaz.add(scroll2);
     	interfaz.add(panel2);
     	
@@ -158,24 +155,29 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFrame frame = new JFrame("Antlr AST");
+				JDialog frame = new JDialog();
 		        JPanel panel = new JPanel();
-		        TreeViewer viewr = new TreeViewer(Arrays.asList(
-		                parser.getRuleNames()),tree);
-		        viewr.setScale(1.5);//scale a little
-		        panel.add(viewr);
-		        frame.add(panel);
-		        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		        frame.setSize(1000,500);
-		        frame.setResizable(true);
-		        frame.setVisible(true);
-				LogoCustomVisitor visitor = new LogoCustomVisitor();
-				visitor.visit(tree);
-				JScrollPane jScrollPane = new JScrollPane(panel);
-				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				frame.getContentPane().add(jScrollPane);
-				
+		        if(parser!=null) {
+		        	TreeViewer viewr = new TreeViewer(Arrays.asList(
+			                parser.getRuleNames()),tree);
+			        viewr.setScale(1.5);//scale a little
+			        panel.add(viewr);
+			        frame.add(panel);
+			        frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			        frame.setSize(1000,500);
+			        frame.setResizable(true);
+			        frame.setVisible(true);
+					LogoCustomVisitor visitor = new LogoCustomVisitor();
+					visitor.visit(tree);
+					JScrollPane jScrollPane = new JScrollPane(panel);
+					jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+					jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					frame.getContentPane().add(jScrollPane);
+
+		        }else {
+		        	consola.setText("Por favor ejecute su programa.");
+		        }
+		        				
 			}
         	
         });
@@ -198,8 +200,6 @@ public class GUI {
 					consola.setText(e.getMessage());
 				}           
 				
-				Turtle taux = new Turtle();
-				taux.getFrame().setVisible(false);
 				
 				LogoLexer lexer = null;
 				try {
@@ -219,12 +219,17 @@ public class GUI {
 				}
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
 				try {
+					Turtle taux = new Turtle("a");
+					
 					parser = new LogoParser(tokens);
 					parser.removeErrorListeners();
 					parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+					parser.consola = consola;
+					
 					parser.turtle = taux;
 
 					tree = parser.program(); 
+					taux.clear();
 					
 				} catch (ParseCancellationException e) {
 					consola.setText("");
@@ -232,8 +237,7 @@ public class GUI {
 					e.printStackTrace();
 				}
 				
-				taux.getFrame().dispose();
-
+				
 
 			}
         	
@@ -284,6 +288,7 @@ public class GUI {
 	        				parser = new LogoParser(tokens);
 		        			parser.removeErrorListeners();
 		        			parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+		        			parser.consola = consola;
 		        			parser.turtle = turtle;
 
 	    					tree = parser.program(); 
@@ -292,13 +297,7 @@ public class GUI {
 	    					consola.setText(e.getMessage());
 	    					e.printStackTrace();
 	    				}
-	        			
-
-	        			
-
-	        		
-        				
-
+	        
         			}
         		}.start();
         	}

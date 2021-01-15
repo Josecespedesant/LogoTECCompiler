@@ -1,7 +1,2 @@
-//comon
-
-para estrella
-	repite 12 [ repite 75 [ AV 100 , RE 100 , GD 2 ] , AV 250 ]
-fin
-
-estrella ( )
+//Esto es un cuadrado
+repite 4 [ AV 100 , GD 90 ]

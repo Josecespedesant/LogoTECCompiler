@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Coseno implements ASTNode {
 	private ASTNode operand1;
 
@@ -11,8 +13,8 @@ public class Coseno implements ASTNode {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, turtle)));
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		float f1 = Float.parseFloat(String.valueOf(operand1.execute(symbolTable, turtle, consola)));
 		double b = Math.toRadians(f1);
 		return Math.cos(b);
 	}

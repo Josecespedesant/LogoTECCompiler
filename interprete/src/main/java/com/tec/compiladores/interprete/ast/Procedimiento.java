@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class Procedimiento implements ASTNode {
 	private String name;
 	private List<Object> aux;
@@ -21,7 +23,7 @@ public class Procedimiento implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
 		for(String s : params) {
 			symbolTableLocal.put(s, new Object());
 		}

@@ -2,6 +2,8 @@ package com.tec.compiladores.interprete.ast;
 
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 public class MenorQue implements ASTNode {
 	private ASTNode op1, op2;	
 
@@ -12,8 +14,8 @@ public class MenorQue implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, Turtle turtle) {
-		return (float) op1.execute(symbolTable, turtle) < (float) op2.execute(symbolTable, turtle);
+	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
+		return (float) op1.execute(symbolTable, turtle, consola) < (float) op2.execute(symbolTable, turtle, consola);
 	}
 
 }
