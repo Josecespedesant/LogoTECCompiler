@@ -1,6 +1,7 @@
 package com.tec.compiladores.interprete.ast;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -49,7 +50,6 @@ public class GUI {
 	private static JButton ejec;
 	private static JButton print;
 	private static JTextArea area;
-	private static JScrollPane pane;
 	private static JFrame window2;
 	private static Boolean flag = true;
 	private static Turtle turtle = new Turtle();
@@ -69,8 +69,13 @@ public class GUI {
     	consola = new JTextArea("Consola");
     	
 		String program = "test/test.logo";
-
+		JScrollPane scroll1 = new JScrollPane(area);
+		scroll1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
+		JScrollPane scroll2 = new JScrollPane(consola);
+		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
     	area.addFocusListener(new FocusListener() {
 			@Override
@@ -85,8 +90,6 @@ public class GUI {
 				return;
 			}
     	});
-    	pane = new JScrollPane(area);
-    	pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     	
     	JPanel panel2 = new JPanel();
     	panel2.setLayout(new FlowLayout());
@@ -100,17 +103,21 @@ public class GUI {
     	Border border2 = BorderFactory.createLineBorder(Color.black);
     	consola.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
     	
+    //	consola.setPreferredSize(new Dimension(500,250));
+    	//area.setPreferredSize(new Dimension(500,250));
     	
     	consola.setEditable(false);
     	interfaz = new JPanel();
     	interfaz.setLayout(new BoxLayout(interfaz, BoxLayout.Y_AXIS));
-    	interfaz.add(area);
-    	interfaz.add(consola);
+    	//interfaz.add(area);
+    	interfaz.add(scroll1);
+    	//interfaz.add(consola);
+    	interfaz.add(scroll2);
     	interfaz.add(panel2);
     	
         window2 = new JFrame("LogoIDE");
         window2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window2.setSize(500,500);
+        window2.setSize(500,600);
         window2.add(interfaz);
         window2.setVisible(true);
     	
@@ -132,9 +139,12 @@ public class GUI {
 						area.read(new BufferedReader(new FileReader(path)), null);
 					
 					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
+						consola.setText("");
+    					consola.setText(e1.getMessage());
 						e1.printStackTrace();
 					} catch (IOException e1) {
+						consola.setText("");
+    					consola.setText(e1.getMessage());
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -184,10 +194,12 @@ public class GUI {
 				    f2.write(source);
 				    f2.close();
 				} catch (IOException e) {
-				    e.printStackTrace();
+					consola.setText("");
+					consola.setText(e.getMessage());
 				}           
 				
-				Turtle taux = new Turtle("");
+				Turtle taux = new Turtle();
+				taux.getFrame().setVisible(false);
 				
 				LogoLexer lexer = null;
 				try {
@@ -196,11 +208,13 @@ public class GUI {
 					lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 					
 				} catch (ParseCancellationException e) {
-					System.out.println(e.getMessage());
+					consola.setText("");
+					consola.setText(e.getMessage());
 					e.printStackTrace();
 					
 				} catch (IOException a) {
-					System.out.println(a.getMessage());
+					consola.setText("");
+					consola.setText(a.getMessage());
 					a.printStackTrace();
 				}
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -213,9 +227,12 @@ public class GUI {
 					tree = parser.program(); 
 					
 				} catch (ParseCancellationException e) {
-					System.out.println(e.getMessage());
+					consola.setText("");
+					consola.setText(e.getMessage());
 					e.printStackTrace();
 				}
+				
+				taux.getFrame().dispose();
 
 
 			}
@@ -236,6 +253,8 @@ public class GUI {
         				    f2.write(source);
         				    f2.close();
         				} catch (IOException e) {
+        					consola.setText("");
+	    					consola.setText(e.getMessage());
         				    e.printStackTrace();
         				}           
         				
@@ -249,11 +268,13 @@ public class GUI {
 							lexer.removeErrorListeners();
 							lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 						} catch (ParseCancellationException e) {
-							System.out.println(e.getMessage());
+							consola.setText("");
+	    					consola.setText(e.getMessage());
 							e.printStackTrace();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							consola.setText("");
+	    					consola.setText(e.getMessage());
+	    					e.printStackTrace();
 						}
 					
 						CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -267,7 +288,8 @@ public class GUI {
 
 	    					tree = parser.program(); 
 	    				} catch (ParseCancellationException e) {
-	    					System.out.println(e.getMessage());
+	    					consola.setText("");
+	    					consola.setText(e.getMessage());
 	    					e.printStackTrace();
 	    				}
 	        			

@@ -578,10 +578,6 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
         updateAll();
     }
     
-    public Turtle(String s) {
-        updateAll();
-
-    }
     
     public void redoAgain() {
     	init();
@@ -647,6 +643,9 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
  *    U U      U U      U U      U U      U U      U U      U U      U U
  */
 
+    public JFrame getWindow() {
+    	return window;
+    }
     private long storeCurrentState()
     {
         return storeCurrentState(false, false, 0,null,null,null,0,null);

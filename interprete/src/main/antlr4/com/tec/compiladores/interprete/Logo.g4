@@ -26,7 +26,8 @@ program:
 	;
 
 //Gramática de un comentario, comienza con dos barras inclinadas y termina en endline
-comentario:  NEWLINE* '//' ~( '\r' | '\n' )* NEWLINE*;
+comentario: NEWLINE* COMENTARIO NEWLINE*; 
+
 
 mostrable returns [ASTNode node]:
 	sentence {$node = $sentence.node;}
@@ -295,6 +296,7 @@ elemento returns [ASTNode node]: ELEMENTO INTEGER ID {$node = new Elemento($ID.t
 primero returns[ASTNode node]: PRIMERO ID {$node = new Primero($ID.text);} | PRIMERO lista {$node = new Primero2($lista.node);};
 
 //LISTA DE TOKENS	*TERMINALES*
+COMENTARIO:  '//' ~[\r\n\f]*;
 PARA: 'para';
 FIN: 'fin';
 BOOLEAN: 'true' | 'false';
