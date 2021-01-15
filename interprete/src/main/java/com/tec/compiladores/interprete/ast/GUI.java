@@ -1,5 +1,6 @@
 package com.tec.compiladores.interprete.ast;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -23,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.antlr.v4.gui.TreeViewer;
@@ -52,6 +55,7 @@ public class GUI {
 	private static Turtle turtle = new Turtle();
 	private static LogoParser parser;
 	private static ParseTree tree;
+	private static JTextArea consola;
     
 	
 	
@@ -62,6 +66,7 @@ public class GUI {
     	ejec = new JButton("Ejecutar");
     	print = new JButton("Imprimir");
     	area = new JTextArea("Introducir código...");
+    	consola = new JTextArea("Consola");
     	
 		String program = "test/test.logo";
 
@@ -88,9 +93,19 @@ public class GUI {
     	
     	panel2.add(carg); panel2.add(comp);panel2.add(ejec);panel2.add(print);
     	
+    	
+    	Border border = BorderFactory.createLineBorder(Color.black);
+    	area.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+    	
+    	Border border2 = BorderFactory.createLineBorder(Color.black);
+    	consola.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+    	
+    	
+    	consola.setEditable(false);
     	interfaz = new JPanel();
     	interfaz.setLayout(new BoxLayout(interfaz, BoxLayout.Y_AXIS));
     	interfaz.add(area);
+    	interfaz.add(consola);
     	interfaz.add(panel2);
     	
         window2 = new JFrame("LogoIDE");
