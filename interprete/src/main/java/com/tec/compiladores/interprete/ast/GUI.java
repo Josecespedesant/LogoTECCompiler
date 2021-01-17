@@ -50,6 +50,7 @@ public class GUI {
 	private static JButton comp;
 	private static JButton ejec;
 	private static JButton print;
+	private static JButton clear;
 	private static JTextArea area;
 	private static JFrame window2;
 	private static Boolean flag = true;
@@ -63,6 +64,7 @@ public class GUI {
 	public static void main(String[] args) {
 		
     	carg = new JButton("Cargar");
+    	clear = new JButton("Limpiar");
     	comp = new JButton("Compillar");
     	ejec = new JButton("Ejecutar");
     	print = new JButton("Imprimir");
@@ -95,7 +97,7 @@ public class GUI {
     	JPanel panel2 = new JPanel();
     	panel2.setLayout(new FlowLayout());
     	
-    	panel2.add(carg); panel2.add(comp);panel2.add(ejec);panel2.add(print);
+    	panel2.add(carg); panel2.add(comp);panel2.add(ejec);panel2.add(print); panel2.add(clear);
     	
     	
     	Border border = BorderFactory.createLineBorder(Color.black);
@@ -118,6 +120,18 @@ public class GUI {
         window2.add(interfaz);
         window2.setVisible(true);
     	
+        
+        clear.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				consola.setText("");
+				
+			}
+        	
+        });
+        
         carg.addActionListener(new ActionListener() {
 
 			@Override
@@ -130,18 +144,18 @@ public class GUI {
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					
 					String path = chooser.getSelectedFile().getPath();
-					area.setText("");
+					area.append("\n");
 					
 					try {
 						area.read(new BufferedReader(new FileReader(path)), null);
-					
+						
 					} catch (FileNotFoundException e1) {
-						consola.setText("");
-    					consola.setText(e1.getMessage());
+						consola.append("\n");
+    					consola.append(e1.getMessage());
 						e1.printStackTrace();
 					} catch (IOException e1) {
-						consola.setText("");
-    					consola.setText(e1.getMessage());
+						consola.append("\n");
+    					consola.append(e1.getMessage());
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -175,7 +189,7 @@ public class GUI {
 					frame.getContentPane().add(jScrollPane);
 
 		        }else {
-		        	consola.setText("Por favor ejecute su programa.");
+		        	consola.append("\nPor favor ejecute su programa.");
 		        }
 		        				
 			}
@@ -196,8 +210,8 @@ public class GUI {
 				    f2.write(source);
 				    f2.close();
 				} catch (IOException e) {
-					consola.setText("");
-					consola.setText(e.getMessage());
+					consola.append("\n");
+					consola.append(e.getMessage());
 				}           
 				
 				
@@ -208,13 +222,13 @@ public class GUI {
 					lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 					
 				} catch (ParseCancellationException e) {
-					consola.setText("");
-					consola.setText(e.getMessage());
+					consola.append("\n");
+					consola.append(e.getMessage());
 					e.printStackTrace();
 					
 				} catch (IOException a) {
-					consola.setText("");
-					consola.setText(a.getMessage());
+					consola.append("\n");
+					consola.append(a.getMessage());
 					a.printStackTrace();
 				}
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -232,8 +246,8 @@ public class GUI {
 					taux.clear();
 					
 				} catch (ParseCancellationException e) {
-					consola.setText("");
-					consola.setText(e.getMessage());
+					consola.append("\n");
+					consola.append(e.getMessage());
 					e.printStackTrace();
 				}
 				

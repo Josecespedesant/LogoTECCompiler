@@ -15,7 +15,8 @@ public class Muestra implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
 		if(consola!=null) {
-			consola.setText(data.execute(symbolTable, turtle, consola).toString());
+			consola.append("\n");
+			consola.append(data.execute(symbolTable, turtle, consola).toString());
 		}
 		return null;
 	}

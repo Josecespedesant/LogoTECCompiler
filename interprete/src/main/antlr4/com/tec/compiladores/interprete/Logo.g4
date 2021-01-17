@@ -73,7 +73,7 @@ sentence returns [ASTNode node]: NEWLINE* ( s1 = inicializacion {$node = $s1.nod
 	
  
 asignacion returns [ASTNode node]: HAZ ID listable 
-	{$node = new Asignacion($ID.text, $listable.node);};
+	{$node = new Asignacion($ID.text, $listable.node);} | HAZ ID {$node = new AsignacionVacia($ID.text);};
 inicializacion returns [ASTNode node]: INIC ID ASSIGN listable
 	{$node = new Inicializacion($ID.text, $listable.node);};	
 muestra returns [ASTNode node]: MUESTRA mostrable {$node = new Muestra($mostrable.node);};

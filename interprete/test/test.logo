@@ -1,2 +1,44 @@
-//Esto es un cuadrado
-repite 4 [ AV 100 , GD 90 ]
+//Programas de ejemplo para revision de código
+
+haz x 100
+
+para ejemplo1 ( x1 )
+	repite 4 [ AV x , GD x1 ]
+fin
+
+para ejemplo2
+	haz z
+	inic z = 10
+	muestra z
+	inc z
+	muestra z
+fin
+
+para ejemplo3
+	inic x = 120
+	muestra x
+	ejecuta [ AV 10 , GD 35 , RE x ]
+fin
+
+para ejemplo4
+	si ( x == 100 ) [ AV 100 ]
+fin
+
+para ejemplo5
+	sisino ( x == 100 ) [ AV 100 ] [ RE 100 ]
+fin
+
+para ejemplo6
+	mientras ( x <= 105 ) [ AV 10 , inc x ]
+	muestra suma ( 5 , x )
+fin
+
+para ejemplo7
+	haz k [ 3 , 2 , 1 ]
+	muestra cuenta k
+	muestra elegir k
+	muestra ultimo k
+	muestra elemento 0 k
+	muestra primero k
+fin
+ejemplo7 ( )
