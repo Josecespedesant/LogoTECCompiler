@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.swing.JTextArea;
 
 public class Azar implements ASTNode {
-	private int randNum;
+	private float randNum;
 	private ASTNode max;	
 
 	public Azar(ASTNode max) {
@@ -16,7 +16,7 @@ public class Azar implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable, Turtle turtle, JTextArea consola) {
-		randNum =  0 + (int)(Math.random() * (((int)max.execute(symbolTable, turtle, consola) - 0) + 1));
+		randNum =  0 + (float)(Math.random() * (((float)max.execute(symbolTable, turtle, consola) - 0) + 1));
 		return randNum;
 	}
 

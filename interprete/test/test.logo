@@ -41,4 +41,17 @@ para ejemplo7
 	muestra elemento 0 k
 	muestra primero k
 fin
-ejemplo7 ( )
+
+para ejemplo8
+	haz m -90
+	repite 1000 [ AV ( sen m ) , inc m ]
+fin
+
+para ejemplo9
+	haz cont 0
+	repite 1000 [ AV 3 , GD azar ( 20 * ( 1 + ( sen ( 10 * cont ) ) ) ) ]
+	zoomfit
+fin
+
+
+ejemplo9 ( )
